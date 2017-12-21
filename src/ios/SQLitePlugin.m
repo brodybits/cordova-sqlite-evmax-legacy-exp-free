@@ -127,10 +127,15 @@
     }
 
     if (dbname == NULL) {
-        DLog(@"No db name specified for open");
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"You must specify database name"];
+        // NOT EXPECTED
+        DLog(@"INTERNAL ERROR: No db name specified for open");
+        // pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"You must specify database name"];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"INTERNAL ERROR: no database name specified"];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId: command.callbackId];
+        return;
     }
-    else {
+
+    //* else {
         NSValue *dbPointer = [openDBs objectForKey:dbfilename];
 
         if (dbPointer != NULL) {
@@ -164,7 +169,7 @@
                 }
             }
         }
-    }
+    //* }
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId: command.callbackId];
 

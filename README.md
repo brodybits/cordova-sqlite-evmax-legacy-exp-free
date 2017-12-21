@@ -1,18 +1,22 @@
 # Cordova/PhoneGap sqlite storage plugin - premium evmax version with parallel database reader enhancements for iOS
 
-Native interface to sqlite in a Cordova/PhoneGap plugin for TBD Android, iOS, macOS, and Windows 10 (UWP), with API similar to HTML5/[Web SQL API](http://www.w3.org/TR/webdatabase/).
+Native interface to sqlite in a Cordova/PhoneGap plugin for ~~Android,~~ iOS, macOS, ~~and Windows 10 (UWP)~~, with API similar to HTML5/[Web SQL API](http://www.w3.org/TR/webdatabase/).
 
 This plugin version is available under GPL v3 (<http://www.gnu.org/licenses/gpl.txt>) or premium commercial license and includes components available under the MIT and Apache 2.0 licenses. Contact for commercial license: <sales@litehelpers.net>
 
 **NOTICE:** Other Cordova sqlite commercial licenses are NOT valid for this plugin version.
 
-XXX GENERAL: This is an EXPERIMENTAL plugin version with support for parallel reader database readers for iOS only.
+XXX GENERAL: This is an EXPERIMENTAL plugin version with support for parallel reader database readers for iOS/macOS only. Android & Windows are NOT supported by this plugin version branch.
 
 XXX TODO: This document may be out of date.
 
 ## About this version branch
 
 TBD
+
+iOS/macOS only
+
+Android & Windows platforms are NOT supported, disabled in plugin.xml
 
 ~~This is the common version branch which supports the most widely used features and serves as the basis for the other versions.~~
 

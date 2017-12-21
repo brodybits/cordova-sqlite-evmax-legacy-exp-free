@@ -116,6 +116,16 @@
 
     NSString *dbname = [self getDBPath:dbfilename at:dblocation];
 
+    if (sqlite3_threadsafe()) {
+        DLog(@"Good news: SQLite is thread safe!");
+    }
+    else {
+        DLog(@"Warning: SQLite is not thread safe.");
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"INTERNAL ERROR: sqlite3 NOT thread safe"];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId: command.callbackId];
+        return;
+    }
+
     if (dbname == NULL) {
         DLog(@"No db name specified for open");
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"You must specify database name"];
@@ -154,13 +164,6 @@
                 }
             }
         }
-    }
-
-    if (sqlite3_threadsafe()) {
-        DLog(@"Good news: SQLite is thread safe!");
-    }
-    else {
-        DLog(@"Warning: SQLite is not thread safe.");
     }
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId: command.callbackId];

@@ -260,7 +260,7 @@
 
     CDVPluginResult* pluginResult;
 
-    @synchronized(self) {
+    //* @synchronized(self) {
         for (NSMutableDictionary *dict in executes) {
             CDVPluginResult *result = [self executeSqlWithDict:dict andArgs:dbargs];
             if ([result.status intValue] == CDVCommandStatus_ERROR) {
@@ -280,7 +280,7 @@
         }
 
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:results];
-    }
+    //* }
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
@@ -299,9 +299,9 @@
     NSMutableDictionary *ex = [options objectForKey:@"ex"];
 
     CDVPluginResult* pluginResult;
-    @synchronized (self) {
+    //* @synchronized (self) {
         pluginResult = [self executeSqlWithDict: ex andArgs: dbargs];
-    }
+    //* }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 

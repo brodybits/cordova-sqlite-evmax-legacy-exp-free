@@ -1,5 +1,9 @@
 # Changes
 
+# cordova-sqlite-evmax-legacy-exp-free 0.0.1-dev00
+
+TBD
+
 ## cordova-sqlite-storage 2.1.4
 
 ##### cordova-sqlite-legacy-core 1.0.6

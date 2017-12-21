@@ -1,9 +1,9 @@
 {
-  "name": "cordova-sqlite-storage",
-  "version": "2.1.4",
-  "description": "Native interface to SQLite for PhoneGap/Cordova",
+  "name": "cordova-sqlite-evmax-legacy-exp-free",
+  "version": "0.0.1-dev00",
+  "description": "Native interface to SQLite for PhoneGap/Cordova - TBD EXPERIMENTAL evmax version",
   "cordova": {
-    "id": "cordova-sqlite-storage",
+    "id": "cordova-sqlite-evmax-legacy-exp-free",
     "platforms": [
       "android",
       "ios",
@@ -24,7 +24,7 @@
     "cordova-windows"
   ],
   "author": "various",
-  "license": "MIT",
+  "license": "GPL",
   "bugs": {
     "url": "https://github.com/litehelpers/Cordova-sqlite-storage/issues"
   },

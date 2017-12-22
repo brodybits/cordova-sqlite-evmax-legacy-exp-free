@@ -1,8 +1,8 @@
 # Changes
 
-# cordova-sqlite-evmax-legacy-exp-free 0.0.1-dev01
+# cordova-sqlite-evmax-legacy-exp-free 0.0.1
 
-TBD
+- parallel reader support for iOS/macOS - initial (EXPERIMENTAL) version
 
 ## cordova-sqlite-storage 2.1.4
 

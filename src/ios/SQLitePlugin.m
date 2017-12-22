@@ -109,12 +109,18 @@
     NSMutableDictionary *options = [command.arguments objectAtIndex:0];
 
     NSString *dbfilename = [options objectForKey:@"name"];
+    NSString *myfilename = [options objectForKey:@"filename"];
 
     NSString *dblocation = [options objectForKey:@"dblocation"];
     if (dblocation == NULL) dblocation = @"docs";
     // DLog(@"using db location: %@", dblocation);
 
-    NSString *dbname = [self getDBPath:dbfilename at:dblocation];
+    NSObject * isReadOnly = [options objectForKey: @"isReadOnly"];
+
+    BOOL is_readonly = (isReadOnly != NULL);
+
+    // NSString *dbname = [self getDBPath:dbfilename at:dblocation];
+    NSString *dbname = [self getDBPath:myfilename at:dblocation];
 
     if (sqlite3_threadsafe()) {
         DLog(@"Good news: SQLite is thread safe!");

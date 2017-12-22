@@ -10,6 +10,10 @@ XXX GENERAL: This is an EXPERIMENTAL plugin version with support for parallel re
 
 XXX TODO: This document may be out of date.
 
+XXX read-only mode TBD possibly not enforced
+
+XXX deleteDatabase NOT SUPPORTED for now, selfTest also NOT supported
+
 ## About this version branch
 
 TBD

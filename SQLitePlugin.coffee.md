@@ -30,6 +30,8 @@
     # NOTE: In case txLocks is renamed or replaced the selfTest has to be adapted as well.
     txLocks = {}
 
+    nextReaderIndex = 1
+
 ## utility functions:
 
     # Errors returned to callbacks must conform to `SqlError` with a code and message.
@@ -680,9 +682,22 @@
           okcb = args[1]
           if args.length > 2 then errorcb = args[2]
 
+        openargs.filename = openargs.name
+
+        if !!openargs.isReadOnly
+          openargs.name = '$RD-' + nextReaderIndex + '-' + openargs.filename
+          ++nextReaderIndex
+          return new SQLitePlugin openargs, okcb, errorcb
+
+        openargs.name = '$RW-' + openargs.filename
+
         new SQLitePlugin openargs, okcb, errorcb
 
       deleteDatabase: (first, success, error) ->
+        # XXX NOT SUPPORTED DUE TO CONFLICT WITH INTERNAL DB NAME
+        if true
+          throw newSQLError 'CURRENTLY NOT SUPPORTED'
+
         # XXX TODO BUG litehelpers/Cordova-sqlite-storage#367:
         # abort all pending transactions (with error callback)
         # when deleting a database
@@ -747,6 +762,10 @@
         return
 
       step1: (successcb, errorcb) ->
+        # XXX NOT SUPPORTED DUE TO ISSUE WITH deleteDatabase
+        if true
+          throw newSQLError 'CURRENTLY NOT SUPPORTED'
+
         SQLiteFactory.openDatabase {name: SelfTest.DBNAME, location: 'default'}, (db) ->
           check1 = false
           db.transaction (tx) ->

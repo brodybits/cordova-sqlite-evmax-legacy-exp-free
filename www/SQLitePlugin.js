@@ -1,5 +1,5 @@
 (function() {
-  var DB_STATE_INIT, DB_STATE_OPEN, READ_ONLY_REGEX, SQLiteFactory, SQLitePlugin, SQLitePluginTransaction, SelfTest, argsArray, dblocations, iosLocationMap, newSQLError, nextTick, root, txLocks;
+  var DB_STATE_INIT, DB_STATE_OPEN, READ_ONLY_REGEX, SQLiteFactory, SQLitePlugin, SQLitePluginTransaction, SelfTest, argsArray, dblocations, iosLocationMap, newSQLError, nextReaderIndex, nextTick, root, txLocks;
 
   root = this;
 
@@ -10,6 +10,8 @@
   DB_STATE_OPEN = "OPEN";
 
   txLocks = {};
+
+  nextReaderIndex = 1;
 
   newSQLError = function(error, code) {
     var sqlError;
@@ -597,10 +599,20 @@
           errorcb = args[2];
         }
       }
+      openargs.filename = openargs.name;
+      if (!!openargs.isReadOnly) {
+        openargs.name = '$RD-' + nextReaderIndex + '-' + openargs.filename;
+        ++nextReaderIndex;
+        return new SQLitePlugin(openargs, okcb, errorcb);
+      }
+      openargs.name = '$RW-' + openargs.filename;
       return new SQLitePlugin(openargs, okcb, errorcb);
     }),
     deleteDatabase: function(first, success, error) {
       var args, dblocation, dbname;
+      if (true) {
+        throw newSQLError('CURRENTLY NOT SUPPORTED');
+      }
       args = {};
       if (first.constructor === String) {
         throw newSQLError('Sorry first deleteDatabase argument must be an object');
@@ -643,6 +655,9 @@
       }));
     },
     step1: function(successcb, errorcb) {
+      if (true) {
+        throw newSQLError('CURRENTLY NOT SUPPORTED');
+      }
       SQLiteFactory.openDatabase({
         name: SelfTest.DBNAME,
         location: 'default'

@@ -1,5 +1,10 @@
+/*
+License for this version: GPL v3 (http://www.gnu.org/licenses/gpl.txt) or commercial license.
+Contact for commercial license: info@litehelpers.net
+ */
+
 (function() {
-  var DB_STATE_INIT, DB_STATE_OPEN, READ_ONLY_REGEX, SQLiteFactory, SQLitePlugin, SQLitePluginTransaction, SelfTest, argsArray, dblocations, iosLocationMap, newSQLError, nextReaderIndex, nextTick, root, txLocks;
+  var DB_STATE_INIT, DB_STATE_OPEN, READ_ONLY_REGEX, SQLiteFactory, SQLitePlugin, SQLitePluginTransaction, SelfTest, argsArray, dblocations, iosLocationMap, newSQLError, nextReaderIndex, nextTick, root, txLocks, useflatjson;
 
   root = this;
 
@@ -12,6 +17,8 @@
   txLocks = {};
 
   nextReaderIndex = 1;
+
+  useflatjson = false;
 
   newSQLError = function(error, code) {
     var sqlError;
@@ -150,12 +157,12 @@
   };
 
   SQLitePlugin.prototype.abortAllPendingTransactions = function() {
-    var j, len1, ref, tx, txLock;
+    var l, len1, ref, tx, txLock;
     txLock = txLocks[this.dbname];
     if (!!txLock && txLock.queue.length > 0) {
       ref = txLock.queue;
-      for (j = 0, len1 = ref.length; j < len1; j++) {
-        tx = ref[j];
+      for (l = 0, len1 = ref.length; l < len1; l++) {
+        tx = ref[l];
         tx.abortFromQ(newSQLError('Invalid database handle'));
       }
       txLock.queue = [];
@@ -175,9 +182,13 @@
     } else {
       console.log('OPEN database: ' + this.dbname);
       opensuccesscb = (function(_this) {
-        return function() {
+        return function(a1) {
           var txLock;
           console.log('OPEN database: ' + _this.dbname + ' - OK');
+          if (!!a1 && a1 === 'a1') {
+            console.log('Detected Android/iOS version with flat JSON interface');
+            useflatjson = true;
+          }
           if (!_this.openDBs[_this.dbname]) {
             console.log('database was closed during open operation');
           }
@@ -265,13 +276,13 @@
   };
 
   SQLitePlugin.prototype.sqlBatch = function(sqlStatements, success, error) {
-    var batchList, j, len1, myfn, st;
+    var batchList, l, len1, myfn, st;
     if (!sqlStatements || sqlStatements.constructor !== Array) {
       throw newSQLError('sqlBatch expects an array');
     }
     batchList = [];
-    for (j = 0, len1 = sqlStatements.length; j < len1; j++) {
-      st = sqlStatements[j];
+    for (l = 0, len1 = sqlStatements.length; l < len1; l++) {
+      st = sqlStatements[l];
       if (st.constructor === Array) {
         if (st.length === 0) {
           throw newSQLError('sqlBatch array element of zero (0) length');
@@ -288,10 +299,10 @@
       }
     }
     myfn = function(tx) {
-      var elem, k, len2, results;
+      var elem, len2, m, results;
       results = [];
-      for (k = 0, len2 = batchList.length; k < len2; k++) {
-        elem = batchList[k];
+      for (m = 0, len2 = batchList.length; m < len2; m++) {
+        elem = batchList[m];
         results.push(tx.addStatement(elem.sql, elem.params, null, null));
       }
       return results;
@@ -359,12 +370,12 @@
   };
 
   SQLitePluginTransaction.prototype.addStatement = function(sql, values, success, error) {
-    var j, len1, params, sqlStatement, t, v;
+    var l, len1, params, sqlStatement, t, v;
     sqlStatement = typeof sql === 'string' ? sql : sql.toString();
     params = [];
     if (!!values && values.constructor === Array) {
-      for (j = 0, len1 = values.length; j < len1; j++) {
-        v = values[j];
+      for (l = 0, len1 = values.length; l < len1; l++) {
+        v = values[l];
         t = typeof v;
         params.push((v === null || v === void 0 ? null : t === 'number' || t === 'string' ? v : v.toString()));
       }
@@ -406,9 +417,8 @@
   };
 
   SQLitePluginTransaction.prototype.run = function() {
-    var batchExecutes, handlerFor, i, mycb, mycbmap, request, tropts, tx, txFailure, waiting;
+    var batchExecutes, handlerFor, tx, txFailure, waiting;
     txFailure = null;
-    tropts = [];
     batchExecutes = this.executes;
     waiting = batchExecutes.length;
     this.executes = [];
@@ -440,6 +450,107 @@
         }
       };
     };
+    if (useflatjson) {
+      this.run_batch_flatjson(batchExecutes, handlerFor);
+    } else {
+      this.run_batch(batchExecutes, handlerFor);
+    }
+  };
+
+  SQLitePluginTransaction.prototype.run_batch_flatjson = function(batchExecutes, handlerFor) {
+    var flatlist, i, l, len1, mycb, mycbmap, p, ref, request;
+    flatlist = [];
+    mycbmap = {};
+    i = 0;
+    while (i < batchExecutes.length) {
+      request = batchExecutes[i];
+      mycbmap[i] = {
+        success: handlerFor(i, true),
+        error: handlerFor(i, false)
+      };
+      flatlist.push(request.sql);
+      flatlist.push(request.params.length);
+      ref = request.params;
+      for (l = 0, len1 = ref.length; l < len1; l++) {
+        p = ref[l];
+        flatlist.push(p);
+      }
+      i++;
+    }
+    mycb = function(result) {
+      var c, changes, errormessage, insert_id, j, k, q, r, ri, rl, row, rows, v;
+      i = 0;
+      ri = 0;
+      rl = result.length;
+      while (ri < rl) {
+        r = result[ri++];
+        q = mycbmap[i];
+        if (r === 'ok') {
+          q.success({
+            rows: []
+          });
+        } else if (r === "ch2") {
+          changes = result[ri++];
+          insert_id = result[ri++];
+          q.success({
+            rowsAffected: changes,
+            insertId: insert_id
+          });
+        } else if (r === 'okrows') {
+          rows = [];
+          changes = 0;
+          insert_id = void 0;
+          if (result[ri] === 'changes') {
+            ++ri;
+            changes = result[ri++];
+          }
+          if (result[ri] === 'insert_id') {
+            ++ri;
+            insert_id = result[ri++];
+          }
+          while (result[ri] !== 'endrows') {
+            c = result[ri++];
+            j = 0;
+            row = {};
+            while (j < c) {
+              k = result[ri++];
+              v = result[ri++];
+              row[k] = v;
+              ++j;
+            }
+            rows.push(row);
+          }
+          q.success({
+            rows: rows,
+            rowsAffected: changes,
+            insertId: insert_id
+          });
+          ++ri;
+        } else if (r === 'errormessage') {
+          errormessage = result[ri++];
+          q.error({
+            result: {
+              message: errormessage
+            }
+          });
+        }
+        ++i;
+      }
+    };
+    cordova.exec(mycb, null, "SQLitePlugin", "backgroundExecuteSqlBatch", [
+      {
+        dbargs: {
+          dbname: this.db.dbname
+        },
+        flen: batchExecutes.length,
+        flatlist: flatlist
+      }
+    ]);
+  };
+
+  SQLitePluginTransaction.prototype.run_batch = function(batchExecutes, handlerFor) {
+    var i, mycb, mycbmap, request, tropts;
+    tropts = [];
     mycbmap = {};
     i = 0;
     while (i < batchExecutes.length) {
@@ -456,9 +567,11 @@
       i++;
     }
     mycb = function(result) {
-      var j, q, r, ref, res, resultIndex, type;
-      for (resultIndex = j = 0, ref = result.length - 1; 0 <= ref ? j <= ref : j >= ref; resultIndex = 0 <= ref ? ++j : --j) {
-        r = result[resultIndex];
+      var q, r, res, reslength, type;
+      i = 0;
+      reslength = result.length;
+      while (i < reslength) {
+        r = result[i];
         type = r.type;
         res = r.result;
         q = mycbmap[resultIndex];
@@ -467,6 +580,7 @@
             q[type](res);
           }
         }
+        ++i;
       }
     };
     cordova.exec(mycb, null, "SQLitePlugin", "backgroundExecuteSqlBatch", [

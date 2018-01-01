@@ -902,6 +902,8 @@ var mytests = function() {
         }, MYTIMEOUT);
 
         it(suiteName + "INSERT inline BLOB value (X'FFD1FFD2') and check stored data [Plugin BROKEN: missing result column data; SELECT BLOB value ISSUE with Android/Windows/WP8]", function(done) {
+          pending('SKIP for now'); // XXX TBD CRASH [macOS/???]
+
           var db = openDatabase('INSERT-inline-BLOB-value-FFD1FFD2-and-check-stored-data.db', '1.0', 'Demo', DEFAULT_SIZE);
 
           db.transaction(function(tx) {

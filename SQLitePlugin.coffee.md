@@ -1,8 +1,11 @@
 # SQLite plugin in Markdown (litcoffee)
 
-#### Use coffee compiler to compile this directly into Javascript
+    ###
+    License for this version: GPL v3 (http://www.gnu.org/licenses/gpl.txt) or commercial license.
+    Contact for commercial license: info@litehelpers.net
+    ###
 
-#### License for common script: MIT or Apache
+#### Use coffee compiler to compile this directly into Javascript
 
 # Top-level SQLite plugin objects
 
@@ -31,6 +34,9 @@
     txLocks = {}
 
     nextReaderIndex = 1
+
+    # Indicate if the platform implementation (Android) requires flat JSON interface
+    useflatjson = false
 
 ## utility functions:
 
@@ -220,9 +226,15 @@
       else
         console.log 'OPEN database: ' + @dbname
 
-        opensuccesscb = =>
+        opensuccesscb = (a1) =>
           # NOTE: the db state is NOT stored (in @openDBs) if the db was closed or deleted.
           console.log 'OPEN database: ' + @dbname + ' - OK'
+
+          # Needed to distinguish between Android version (with flat JSON batch sql interface) and
+          # other versions (JSON batch interface unchanged)
+          if !!a1 and a1 == 'a1'
+            console.log 'Detected Android/iOS version with flat JSON interface'
+            useflatjson = true
 
           #if !@openDBs[@dbname] then call open error cb, and abort pending tx if any
           if !@openDBs[@dbname]
@@ -458,9 +470,9 @@
       return
 
     SQLitePluginTransaction::run = ->
+      # persist for handlerFor callbacks:
       txFailure = null
-
-      tropts = []
+      # sql statements from queue:
       batchExecutes = @executes
 
       # NOTE: If this is zero it will not work. Workaround is applied in the constructor.
@@ -496,6 +508,96 @@
 
           return
 
+      if useflatjson
+        @run_batch_flatjson batchExecutes, handlerFor
+      else
+        @run_batch batchExecutes, handlerFor
+      return
+
+    # version for Android (with flat JSON interface)
+    SQLitePluginTransaction::run_batch_flatjson = (batchExecutes, handlerFor) ->
+      flatlist = []
+      mycbmap = {}
+
+      i = 0
+      while i < batchExecutes.length
+        request = batchExecutes[i]
+
+        mycbmap[i] =
+          success: handlerFor(i, true)
+          error: handlerFor(i, false)
+
+        flatlist.push request.sql
+        flatlist.push request.params.length
+        for p in request.params
+          flatlist.push p
+
+        i++
+
+      mycb = (result) ->
+        i = 0
+        ri = 0
+        rl = result.length
+
+        while ri < rl
+          r = result[ri++]
+          q = mycbmap[i]
+
+          if r == 'ok'
+            q.success { rows: [] }
+
+          else if r is "ch2"
+            changes = result[ri++]
+            insert_id = result[ri++]
+            q.success
+              rowsAffected: changes
+              insertId: insert_id
+
+          else if r == 'okrows'
+            rows = []
+            changes = 0
+            insert_id = undefined
+
+            if result[ri] == 'changes'
+              ++ri
+              changes = result[ri++]
+
+            if result[ri] == 'insert_id'
+              ++ri
+              insert_id = result[ri++]
+
+            while result[ri] != 'endrows'
+              c = result[ri++]
+              j = 0
+              row = {}
+
+              while j < c
+                k = result[ri++]
+                v = result[ri++]
+                row[k] = v
+                ++j
+
+              rows.push row
+
+            q.success { rows: rows, rowsAffected: changes, insertId: insert_id }
+            ++ri
+
+          else if r == 'errormessage'
+            errormessage = result[ri++]
+            q.error { result: { message: errormessage } }
+
+          ++i
+
+        return
+
+      cordova.exec mycb, null, "SQLitePlugin", "backgroundExecuteSqlBatch",
+        [{dbargs: {dbname: @db.dbname}, flen: batchExecutes.length, flatlist: flatlist}]
+
+      return
+
+    # version for other platforms
+    SQLitePluginTransaction::run_batch = (batchExecutes, handlerFor) ->
+      tropts = []
       mycbmap = {}
 
       i = 0
@@ -514,12 +616,17 @@
         i++
 
       mycb = (result) ->
-        #console.log "mycb result #{JSON.stringify result}"
+        # console.log "mycb result #{JSON.stringify result}"
 
-        for resultIndex in [0 .. result.length-1]
-          r = result[resultIndex]
+        # for resultIndex in [0 .. result.length-1]
+        #   r = result[resultIndex]
+
+        i = 0
+        reslength = result.length
+        while i < reslength
+          r = result[i]
           type = r.type
-          # NOTE: r.qid can be ignored
+          # NOTE: r.qid ignored (if present)
           res = r.result
 
           q = mycbmap[resultIndex]
@@ -527,6 +634,8 @@
           if q
             if q[type]
               q[type] res
+
+          ++i
 
         return
 

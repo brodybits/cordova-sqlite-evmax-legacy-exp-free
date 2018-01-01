@@ -1,7 +1,8 @@
 # Changes
 
-# cordova-sqlite-evmax-legacy-exp-free 0.0.2-pre1
+# cordova-sqlite-evmax-legacy-exp-free 0.0.2
 
+- Include iOS/macOS flat JSON memory enhancements from evplus (legacy) version
 - SQLitePlugin.h do NOT export internal functions
 
 # cordova-sqlite-evmax-legacy-exp-free 0.0.1

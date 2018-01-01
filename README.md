@@ -8,6 +8,8 @@ This plugin version is available under GPL v3 (<http://www.gnu.org/licenses/gpl.
 
 XXX GENERAL: This is an EXPERIMENTAL plugin version with support for parallel reader database readers for iOS/macOS only. Android & Windows are NOT supported by this plugin version branch.
 
+XXX [brodybits / cordova-sqlite-evmax-legacy-exp-free#1](https://github.com/brodybits/cordova-sqlite-evmax-legacy-exp-free/issues/1): parallel reader/writer failures may occur due to locking as described in <https://www.sqlite.org/lockingv3.html>. Temporary workaround may be needed at the application layer. Another alternative discussed in [brodybits / cordova-sqlite-evmax-legacy-exp-free#1](https://github.com/brodybits/cordova-sqlite-evmax-legacy-exp-free/issues/1) may be to use WAL mode instead.
+
 XXX TODO: This document may be out of date.
 
 XXX read-only mode TBD possibly not enforced
@@ -183,10 +185,11 @@ See the [Sample section](#sample) for a sample with a more detailed explanation.
 - iOS versions supported: 8.x / 9.x / 10.x / 11.x (see [deviations section](#deviations) below for differences in case of WKWebView)
 - FTS3, FTS4, and R-Tree are fully tested and supported for all target platforms in this version branch.
 - Default `PRAGMA journal_mode` setting (*tested*):
-  - Android (builtin android.database implementation _as selected using the `androidDatabaseImplementation` option in `window.sqlitePlugin.openDatabase`_): `persist`
+  - Android (builtin android.database implementation as selected using the `androidDatabaseImplementation` option in `window.sqlitePlugin.openDatabase`): `persist` (Android pre-8.0)
   - otherwise: `delete`
 - AUTO-VACUUM is not enabled by default. If no form of `VACUUM` or `PRAGMA auto_vacuum` is used then sqlite will automatically reuse deleted data space for new data but the database file will never shrink. For reference: <http://www.sqlite.org/pragma.html#pragma_auto_vacuum> and [litehelpers/Cordova-sqlite-storage#646](https://github.com/litehelpers/Cordova-sqlite-storage/issues/646)
 - In case of memory issues please use smaller transactions or use the plugin version at [litehelpers / Cordova-sqlite-evcore-extbuild-free](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free) (GPL or commercial license terms).
+- Patches will NOT be accepted on this plugin version due to possible licensing issues.
 
 <!-- END Status -->
 
@@ -1615,18 +1618,7 @@ function closeDB() {
 - Testimonials of apps that are using this plugin would be especially helpful.
 - Reporting issues can help improve the quality of this plugin.
 
-## Code
-
-**WARNING:** Please do NOT propose changes from your default branch. Contributions may be rebased using `git rebase` or `git cherry-pick` and not merged.
-
-- Patches with bug fixes are helpful, especially when submitted with test code.
-- Other enhancements welcome for consideration, when submitted with test code and are working for all supported platforms. Increase of complexity should be avoided.
-- All contributions may be reused by [@brodybits](https://github.com/brodybits) under another license in the future. Efforts will be taken to give credit for major contributions but it will not be guaranteed.
-- Project restructuring, i.e. moving files and/or directories around, should be avoided if possible.
-- If you see a need for restructuring, it is better to first discuss it in new issue where alternatives can be discussed before reaching a conclusion. If you want to propose a change to the project structure:
-  - Remember to make (and use) a special branch within your fork from which you can send the proposed restructuring;
-  - Always use `git mv` to move files & directories;
-  - Never mix a move/rename operation with any other changes in the same commit.
+**NOTE:** As stated above, patches will NOT be accepted on this project due to potential licensing issues. Issues with reproduction scenarios will help maintain and improve the quality of this plugin for future users. (Pointer to the code that may be causing the issue would be helpful as well.)
 
 <!-- END Contributing -->
 

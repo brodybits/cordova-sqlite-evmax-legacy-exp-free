@@ -1,5 +1,9 @@
 # Changes
 
+# cordova-sqlite-evmax-legacy-exp-free 0.0.2-pre1
+
+- SQLitePlugin.h do NOT export internal functions
+
 # cordova-sqlite-evmax-legacy-exp-free 0.0.1
 
 - parallel reader support for iOS/macOS - initial (EXPERIMENTAL) version

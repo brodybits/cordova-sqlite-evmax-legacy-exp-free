@@ -38,13 +38,9 @@ typedef int WebSQLError;
 -(void) close: (CDVInvokedUrlCommand*)command;
 -(void) delete: (CDVInvokedUrlCommand*)command;
 
--(void) openNow: (CDVInvokedUrlCommand*)command;
--(void) closeNow: (CDVInvokedUrlCommand*)command;
--(void) deleteNow: (CDVInvokedUrlCommand*)command;
-
 // Batch processing interface
 -(void) backgroundExecuteSqlBatch: (CDVInvokedUrlCommand*)command;
 
--(void) executeSqlBatchNow: (CDVInvokedUrlCommand*)command;
+// NOTE: INTERNAL SQLitePlugin functions are NOT exported.
 
 @end /* vim: set expandtab : */

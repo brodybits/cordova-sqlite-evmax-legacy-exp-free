@@ -887,7 +887,7 @@ var mytests = function() {
 
       });
 
-        it(suiteName + 'INSERT OR IGNORE result in case of constraint violation [(WebKit) Web SQL DEVIATION on Android/iOS: reports old insertId value]', function(done) {
+        it(suiteName + 'INSERT OR IGNORE result in case of constraint violation [(WebKit) Web SQL DEVIATION on Android/iOS: reports old insertId value; DEVIATION on iOS/macOS PLUGIN: reports -1]', function(done) {
           var db = openDatabase('INSERT-OR-IGNORE-test.db', '1.0', 'Test', DEFAULT_SIZE);
 
           db.transaction(function(tx) {
@@ -920,6 +920,8 @@ var mytests = function() {
               var checkInsertId = rs1.insertId;
               if (isWebSql)
                 expect(checkInsertId).toBe(2); // Andriod/iOS WebKit Web SQL DEVIATION: OLD insertId value
+              else if (!isWindows && !isAndroid)
+                expect(checkInsertId).toBe(-1); // iOS/macOS PLUGIN DEVIATION
               else
                 expect(checkInsertId).toBe(undefined);
 

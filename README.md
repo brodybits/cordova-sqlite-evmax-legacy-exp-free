@@ -19,6 +19,7 @@ XXX deleteDatabase NOT SUPPORTED for now, selfTest also NOT supported
 _XXX OTHER ISSUES:_
 - _possible crash in certain cases of inline BLOB values on iOS/macOS_
 - _this plugin version now returns invalid error code & inconsistent error message on iOS/macOS_
+- _INSERT or IGNORE result in case of constraint violation reports insertId=-1 on iOS/macOS_
 
 ## About this plugin version branch
 

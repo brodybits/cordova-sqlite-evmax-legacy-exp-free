@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2017: Christopher J. Brody (aka Chris Brody)
+ * Copyright (c) 2012-2018: Christopher J. Brody (aka Chris Brody)
  * Copyright (C) 2011 Davide Bertola
  *
  * License for this version: GPL v3 (http://www.gnu.org/licenses/gpl.txt) or commercial license.
@@ -134,6 +134,7 @@
 
     if (dbname == NULL) {
         // NOT EXPECTED
+        // XXX (INTERNAL ERROR - SIGNAL ERROR STATUS):
         DLog(@"INTERNAL ERROR: No db name specified for open");
         // pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"You must specify database name"];
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"INTERNAL ERROR: no database name specified"];
@@ -145,11 +146,10 @@
         NSValue *dbPointer = [openDBs objectForKey:dbfilename];
 
         if (dbPointer != NULL) {
-            // NO LONGER EXPECTED:
+            // NO LONGER EXPECTED due to BUG 666 workaround solution:
             // DLog(@"Reusing existing database connection for db name %@", dbfilename);
-            DLog(@"INTERNAL ERROR: db name already open: %@", dbfilename);
-            // pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Database opened"];
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"INTERNAL ERROR: database already opened"];
+            NSLog(@"INTERNAL ERROR: database already open for db name: %@ (db file name: %@)", dbname, dbfilename);
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"INTERNAL ERROR: database already open"];
             [self.commandDelegate sendPluginResult:pluginResult callbackId: command.callbackId];
             return;
         }

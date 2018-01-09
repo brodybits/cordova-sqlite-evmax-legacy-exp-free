@@ -1,6 +1,6 @@
 # Changes
 
-# cordova-sqlite-evmax-legacy-exp-free 0.0.3-pre2b
+# cordova-sqlite-evmax-legacy-exp-free 0.0.3-pre2c
 
 ## cordova-sqlite-storage 2.2.0
 

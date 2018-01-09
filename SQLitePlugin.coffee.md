@@ -629,7 +629,7 @@
           # NOTE: r.qid ignored (if present)
           res = r.result
 
-          q = mycbmap[resultIndex]
+          q = mycbmap[i]
 
           if q
             if q[type]

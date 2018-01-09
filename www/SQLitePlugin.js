@@ -574,7 +574,7 @@ Contact for commercial license: info@litehelpers.net
         r = result[i];
         type = r.type;
         res = r.result;
-        q = mycbmap[resultIndex];
+        q = mycbmap[i];
         if (q) {
           if (q[type]) {
             q[type](res);

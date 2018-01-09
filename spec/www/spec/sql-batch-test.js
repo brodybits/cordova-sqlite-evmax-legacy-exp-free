@@ -19,7 +19,9 @@ var pluginScenarioList = [
   'Plugin-implementation-2'
 ];
 
-var pluginScenarioCount = isAndroid ? 2 : 1;
+// XXX TBD
+//var pluginScenarioCount = isAndroid ? 2 : 1;
+var pluginScenarioCount = 1;
 
 var mytests = function() {
 

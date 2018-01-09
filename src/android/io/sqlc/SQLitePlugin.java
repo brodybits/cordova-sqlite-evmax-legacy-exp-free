@@ -89,6 +89,7 @@ public class SQLitePlugin extends CordovaPlugin {
         JSONObject o;
         String echo_value;
         String dbname;
+        String filename;
 
         switch (action) {
             case echoStringValue:
@@ -100,8 +101,9 @@ public class SQLitePlugin extends CordovaPlugin {
             case open:
                 o = args.getJSONObject(0);
                 dbname = o.getString("name");
+                filename = o.getString("filename");
                 // open database and start reading its queue
-                this.startDatabase(dbname, o, cbc);
+                this.startDatabase(dbname, filename, o, cbc);
                 break;
 
             case close:
@@ -218,14 +220,14 @@ public class SQLitePlugin extends CordovaPlugin {
     // LOCAL METHODS
     // --------------------------------------------------------------------------
 
-    private void startDatabase(String dbname, JSONObject options, CallbackContext cbc) {
+    private void startDatabase(String dbname, String filename, JSONObject options, CallbackContext cbc) {
         DBRunner r = dbrmap.get(dbname);
 
         if (r != null) {
             // NO LONGER EXPECTED due to BUG 666 workaround solution:
             cbc.error("INTERNAL ERROR: database already open for db name: " + dbname);
         } else {
-            r = new DBRunner(dbname, options, cbc);
+            r = new DBRunner(dbname, filename, options, cbc);
             dbrmap.put(dbname, r);
             this.cordova.getThreadPool().execute(r);
         }
@@ -302,6 +304,7 @@ public class SQLitePlugin extends CordovaPlugin {
      * @param dbname   The name of the database file
      */
     private void closeDatabaseNow(String dbname) {
+        /* ** [FUTURE TBD] BROKEN:
         DBRunner r = dbrmap.get(dbname);
 
         if (r != null) {
@@ -314,6 +317,7 @@ public class SQLitePlugin extends CordovaPlugin {
                 Log.e(SQLitePlugin.class.getSimpleName(), "couldn't close database", e);
             }
         }
+        // */
     }
 
     private void deleteDatabase(String dbname, CallbackContext cbc) {
@@ -508,23 +512,28 @@ public class SQLitePlugin extends CordovaPlugin {
 
     private class DBRunner implements Runnable {
         final String dbname;
+        final String filename;
         private boolean oldImpl;
         private boolean bugWorkaround;
 
         final BlockingQueue<DBQuery> q;
         final CallbackContext openCbc;
 
-        /* ** FUTURE TBD (???):
+        SQLiteAndroidDatabase mydb;
+        /* ** XXX TBD GONE:
         SQLiteConnection mydbc;
         // */
 
-        DBRunner(final String dbname, JSONObject options, CallbackContext cbc) {
+        DBRunner(final String dbname, final String filename, JSONObject options, CallbackContext cbc) {
             this.dbname = dbname;
+            this.filename = filename;
+            /* ** TBD SKIP FOR NOW:
             this.oldImpl = options.has("androidOldDatabaseImplementation");
-            Log.v(SQLitePlugin.class.getSimpleName(), "Android db implementation: built-in android.database.sqlite package");
+            Log.v(SQLitePlugin.class.getSimpleName(), "Android db implementation: ...");
             this.bugWorkaround = this.oldImpl && options.has("androidBugWorkaround");
             if (this.bugWorkaround)
                 Log.v(SQLitePlugin.class.getSimpleName(), "Android db closing/locking workaround applied");
+            // */
 
             this.q = new LinkedBlockingQueue<DBQuery>();
             this.openCbc = cbc;
@@ -532,10 +541,8 @@ public class SQLitePlugin extends CordovaPlugin {
 
         public void run() {
             try {
-                //* [OLD]
-                this.mydb = openDatabase(dbname, this.openCbc, this.oldImpl);
-                // */
-                /* ** FUTURE TBD (???):
+                this.mydb = openDatabase(filename, this.openCbc, this.oldImpl);
+                /* ** XXX TBD GONE:
                 this.mydbc = openDatabase(dbname, this.openCbc);
                 // */
             } catch (Exception e) {

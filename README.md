@@ -1,12 +1,12 @@
-# Cordova/PhoneGap sqlite storage plugin - premium evmax version with parallel database reader enhancements for iOS
+# Cordova/PhoneGap sqlite storage plugin - premium evmax version with parallel database reader enhancements for Android/iOS
 
-Native interface to sqlite in a Cordova/PhoneGap plugin for ~~Android,~~ iOS, macOS, ~~and Windows 10 (UWP)~~, with API similar to HTML5/[Web SQL API](http://www.w3.org/TR/webdatabase/).
+Native interface to sqlite in a Cordova/PhoneGap plugin for Android, iOS, macOS, ~~and Windows 10 (UWP)~~, with API similar to HTML5/[Web SQL API](http://www.w3.org/TR/webdatabase/).
 
 This plugin version is available under GPL v3 (<http://www.gnu.org/licenses/gpl.txt>) or premium commercial license and includes components available under the MIT and Apache 2.0 licenses. Contact for commercial license: <sales@litehelpers.net>
 
 **NOTICE:** Other Cordova sqlite commercial licenses are NOT valid for this plugin version.
 
-XXX GENERAL: This is an EXPERIMENTAL plugin version with support for parallel reader database readers for iOS/macOS only. Android & Windows are NOT supported by this plugin version branch.
+XXX GENERAL: This is an EXPERIMENTAL plugin version with support for parallel _sqlite database readers_ for iOS, macOS, and FUTURE TODO: Android. (Build flag fix is needed to support parallel database readers on Android.) Windows is CURRENTLY NOT supported by this plugin version branch.
 
 XXX [brodybits / cordova-sqlite-evmax-legacy-exp-free#1](https://github.com/brodybits/cordova-sqlite-evmax-legacy-exp-free/issues/1): parallel reader/writer failures may occur due to locking as described in <https://www.sqlite.org/lockingv3.html>. Temporary workaround may be needed at the application layer. Another alternative discussed in [brodybits / cordova-sqlite-evmax-legacy-exp-free#1](https://github.com/brodybits/cordova-sqlite-evmax-legacy-exp-free/issues/1) may be to use WAL mode instead.
 
@@ -16,18 +16,24 @@ XXX read-only mode TBD possibly not enforced
 
 XXX deleteDatabase NOT SUPPORTED for now, selfTest also NOT supported
 
+XXX WARNING: `androidDatabaseImplementation: 2` setting is IGNORED in this plugin version, may be added after sufficient testing. Multiple SQLite problem with possible corruption as described below is possible in case of multiple plugins that attempt to access the same database.
+
+XXX ADDITIONAL WARNING: Parallel database access is NOT expected to work on Android and is NOT guaranteed to be safe from possible corruption due to build flag fix needed.
+
 _XXX OTHER ISSUES:_
 - _possible crash in certain cases of inline BLOB values on iOS/macOS_
-- _this plugin version now returns invalid error code & inconsistent error message on iOS/macOS_
+- _this plugin version now returns invalid error code & inconsistent error message on iOS/macOS/..._
 - _INSERT or IGNORE result in case of constraint violation reports insertId=-1 on iOS/macOS_
+
+_XXX OTHER MAJOR TODOS:_
+- _Build flag fix needed to support parallel readers on Android (`SQLITE_THREADSAFE=2`)_
+- _Roll Android sqlite access performance enhancements from cordova-sqlite-evcore into this plugin version_
 
 ## About this plugin version branch
 
 TBD
 
-iOS/macOS only
-
-Android & Windows platforms are NOT supported, disabled in plugin.xml
+Windows platform is NOT supported, disabled in plugin.xml
 
 ~~This is the common version branch which supports the most widely used features and serves as the basis for the other versions.~~
 

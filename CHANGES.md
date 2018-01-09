@@ -1,6 +1,8 @@
 # Changes
 
-# cordova-sqlite-evmax-legacy-exp-free 0.0.3-pre2
+# cordova-sqlite-evmax-legacy-exp-free 0.0.3-xxx-unsafe-android-wip
+
+- Android platform support XXX WIP WITH UNSAFE PARALLEL ACCESS
 
 ## cordova-sqlite-storage 2.2.0
 

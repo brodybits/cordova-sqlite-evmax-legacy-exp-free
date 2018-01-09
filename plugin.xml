@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova-sqlite-evmax-legacy-exp-free"
-    version="0.0.3-pre2">
+    version="0.0.3-xxx-unsafe-android-wip">
 
     <name>Cordova sqlite storage plugin - TBD evmax (EXPERIMENTAL)</name>
 
@@ -21,7 +21,7 @@
     </js-module>
 
     <!-- android -->
-    <platform name="android-disabled">
+    <platform name="android">
         <!-- Cordova >= 3.0.0 -->
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="SQLitePlugin">

@@ -4,7 +4,7 @@ Contact for commercial license: info@litehelpers.net
  */
 
 (function() {
-  var DB_STATE_INIT, DB_STATE_OPEN, READ_ONLY_REGEX, SQLiteFactory, SQLitePlugin, SQLitePluginTransaction, SelfTest, argsArray, dblocations, iosLocationMap, newSQLError, nextReaderIndex, nextTick, root, txLocks, useflatjson;
+  var DB_STATE_INIT, DB_STATE_OPEN, READ_ONLY_REGEX, SQLiteFactory, SQLitePlugin, SQLitePluginTransaction, SelfTest, argsArray, dblocations, iosLocationMap, newSQLError, nextReaderIndex, nextTick, root, txLocks, useflatjson_a1;
 
   root = this;
 
@@ -18,7 +18,7 @@ Contact for commercial license: info@litehelpers.net
 
   nextReaderIndex = 1;
 
-  useflatjson = false;
+  useflatjson_a1 = false;
 
   newSQLError = function(error, code) {
     var sqlError;
@@ -187,7 +187,7 @@ Contact for commercial license: info@litehelpers.net
           console.log('OPEN database: ' + _this.dbname + ' - OK');
           if (!!a1 && a1 === 'a1') {
             console.log('Detected Android/iOS version with flat JSON interface');
-            useflatjson = true;
+            useflatjson_a1 = true;
           }
           if (!_this.openDBs[_this.dbname]) {
             console.log('database was closed during open operation');
@@ -450,14 +450,14 @@ Contact for commercial license: info@litehelpers.net
         }
       };
     };
-    if (useflatjson) {
-      this.run_batch_flatjson(batchExecutes, handlerFor);
+    if (useflatjson_a1) {
+      this.run_batch_flatjson_a1(batchExecutes, handlerFor);
     } else {
       this.run_batch(batchExecutes, handlerFor);
     }
   };
 
-  SQLitePluginTransaction.prototype.run_batch_flatjson = function(batchExecutes, handlerFor) {
+  SQLitePluginTransaction.prototype.run_batch_flatjson_a1 = function(batchExecutes, handlerFor) {
     var flatlist, i, l, len1, mycb, mycbmap, p, ref, request;
     flatlist = [];
     mycbmap = {};

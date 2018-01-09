@@ -35,8 +35,8 @@
 
     nextReaderIndex = 1
 
-    # Indicate if the platform implementation (Android) requires flat JSON interface
-    useflatjson = false
+    # Indicate if the platform implementation requires flat JSON (a1) interface (iOS/macOS)
+    useflatjson_a1 = false
 
 ## utility functions:
 
@@ -234,7 +234,7 @@
           # other versions (JSON batch interface unchanged)
           if !!a1 and a1 == 'a1'
             console.log 'Detected Android/iOS version with flat JSON interface'
-            useflatjson = true
+            useflatjson_a1 = true
 
           #if !@openDBs[@dbname] then call open error cb, and abort pending tx if any
           if !@openDBs[@dbname]
@@ -508,14 +508,14 @@
 
           return
 
-      if useflatjson
-        @run_batch_flatjson batchExecutes, handlerFor
+      if useflatjson_a1
+        @run_batch_flatjson_a1 batchExecutes, handlerFor
       else
         @run_batch batchExecutes, handlerFor
       return
 
-    # version for Android (with flat JSON interface)
-    SQLitePluginTransaction::run_batch_flatjson = (batchExecutes, handlerFor) ->
+    # version for iOS/macOS with flat JSON interface (a1)
+    SQLitePluginTransaction::run_batch_flatjson_a1 = (batchExecutes, handlerFor) ->
       flatlist = []
       mycbmap = {}
 
@@ -595,7 +595,7 @@
 
       return
 
-    # version for other platforms
+    # TBD version for other platforms: Android, TBD NOT SUPPORTED by this plugin version: Windows
     SQLitePluginTransaction::run_batch = (batchExecutes, handlerFor) ->
       tropts = []
       mycbmap = {}

@@ -31,6 +31,7 @@ function start(n) {
 var isWindows = /Windows /.test(navigator.userAgent);
 var isAndroid = !isWindows && /Android/.test(navigator.userAgent);
 
+// XXX
 // NOTE: While in certain version branches there is no difference between
 // the default Android implementation and implementation #2,
 // this test script will also apply the androidLockWorkaround: 1 option

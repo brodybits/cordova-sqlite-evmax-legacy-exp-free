@@ -128,6 +128,9 @@
     # NOTE: In case txLocks is renamed or replaced the selfTest has to be adapted as well.
     SQLitePlugin::openDBs = {}
 
+    SQLitePlugin::dbidmap = {}
+    SQLitePlugin::fjmap = {}
+
     SQLitePlugin::addTransaction = (t) ->
       if !txLocks[@dbname]
         txLocks[@dbname] = {
@@ -214,6 +217,8 @@
       if @dbname of @openDBs
         console.log 'database already open: ' + @dbname
 
+        @dbid = @dbidmap[@dbname]
+
         # for a re-open run the success cb async so that the openDatabase return value
         # can be used in the success handler as an alternative to the handler's
         # db argument
@@ -226,15 +231,20 @@
       else
         console.log 'OPEN database: ' + @dbname
 
-        opensuccesscb = (a1) =>
+        opensuccesscb = (fjinfo) =>
           # NOTE: the db state is NOT stored (in @openDBs) if the db was closed or deleted.
           console.log 'OPEN database: ' + @dbname + ' - OK'
 
+          # XXX TBD
           # Needed to distinguish between Android version (with flat JSON batch sql interface) and
           # other versions (JSON batch interface unchanged)
-          if !!a1 and a1 == 'a1'
+          if !!fjinfo and fjinfo == 'a1'
             console.log 'Detected Android/iOS version with flat JSON interface'
             useflatjson_a1 = true
+
+          if !!fjinfo and !!fjinfo.dbid
+            @dbidmap[@dbname] = @dbid = fjinfo.dbid
+            @fjmap[@dbname] = true
 
           #if !@openDBs[@dbname] then call open error cb, and abort pending tx if any
           if !@openDBs[@dbname]
@@ -258,11 +268,15 @@
           # XXX TODO: newSQLError missing the message part!
           if !!error then error newSQLError 'Could not open database'
           delete @openDBs[@dbname]
+          delete @dbidmap[@dbname]
+          delete @fjmap[@dbname]
           @abortAllPendingTransactions()
           return
 
         # store initial DB state:
         @openDBs[@dbname] = DB_STATE_INIT
+        @dbidmap[@dbname] = @dbid = null
+        @fjmap[@dbname] = false
 
         # UPDATED WORKAROUND SOLUTION to cordova-sqlite-storage BUG 666:
         # Request to native side to close existing database
@@ -498,20 +512,131 @@
           if --waiting == 0
             if txFailure
               tx.executes = []
-              tx.abort txFailure
+              tx.$abort txFailure
             else if tx.executes.length > 0
               # new requests have been issued by the callback
               # handlers, so run another batch.
               tx.run()
             else
-              tx.finish()
+              tx.$finish()
 
           return
 
       if useflatjson_a1
         @run_batch_flatjson_a1 batchExecutes, handlerFor
+      else if @db.fjmap[@db.dbname]
+        @run_batch_flatjson batchExecutes, handlerFor
       else
         @run_batch batchExecutes, handlerFor
+      return
+
+    # version for Android-sqlite-evcore-native-driver-free (with flat JSON interface)
+    SQLitePluginTransaction::run_batch_flatjson = (batchExecutes, handlerFor) ->
+      flatlist = []
+      mycbmap = {}
+
+      # XXX not always set in SQLitePlugin::open
+      # FUTURE TBD find a more efficient way?
+      @db.dbid = @db.dbidmap[@db.dbname]
+
+      flatlist.push @db.dbid
+      flatlist.push batchExecutes.length
+
+      i = 0
+      while i < batchExecutes.length
+        request = batchExecutes[i]
+
+        mycbmap[i] =
+          success: handlerFor(i, true)
+          error: handlerFor(i, false)
+
+        flatlist.push request.sql
+        flatlist.push request.params.length
+        for p in request.params
+          flatlist.push p
+
+        i++
+
+      flatlist.push 'extra'
+
+      # keep for batch error handling:
+      bl = batchExecutes.length
+
+      mycb = (result) ->
+        i = 0
+        ri = 0
+        rl = result.length
+
+        if rl > 0 and result[0] is 'batcherror'
+          while i < bl
+            # TODO use correct code values
+            mycbmap[i].error
+              result:
+                code: -1
+                sqliteCode: -1
+                message: 'internal batch error'
+            ++i
+
+          return
+
+        while ri < rl
+          r = result[ri++]
+          q = mycbmap[i]
+
+          if r == 'ok'
+            q.success { rows: [] }
+
+          else if r is "ch2"
+            changes = result[ri++]
+            insert_id = result[ri++]
+            q.success
+              rowsAffected: changes
+              insertId: insert_id
+
+          else if r == 'okrows'
+            rows = []
+            changes = 0
+            insert_id = undefined
+
+            if result[ri] == 'changes'
+              ++ri
+              changes = result[ri++]
+
+            if result[ri] == 'insert_id'
+              ++ri
+              insert_id = result[ri++]
+
+            while result[ri] != 'endrows'
+              c = result[ri++]
+              j = 0
+              row = {}
+
+              while j < c
+                k = result[ri++]
+                v = result[ri++]
+                row[k] = v
+                ++j
+
+              rows.push row
+
+            q.success { rows: rows, rowsAffected: changes, insertId: insert_id }
+            ++ri
+
+          else if r == 'error'
+            code = result[ri++]
+            ++ri # [ignored]
+            errormessage = result[ri++]
+            q.error
+              code: code
+              message: errormessage
+
+          ++i
+
+        return
+
+      # NOTE: flatlist.length is needed internally for the JSON decoding.
+      cordova.exec mycb, null, "SQLitePlugin", "fj:#{flatlist.length};extra", flatlist
+
       return
 
     # version for iOS/macOS with flat JSON interface (a1)
@@ -595,7 +720,8 @@
 
       return
 
-    # TBD version for other platforms: Android, TBD NOT SUPPORTED by this plugin version: Windows
+    # XXX TBD ???:
+    # version for other platforms
     SQLitePluginTransaction::run_batch = (batchExecutes, handlerFor) ->
       tropts = []
       mycbmap = {}
@@ -643,7 +769,7 @@
 
       return
 
-    SQLitePluginTransaction::abort = (txFailure) ->
+    SQLitePluginTransaction::$abort = (txFailure) ->
       if @finalized then return
       tx = @
 
@@ -671,7 +797,7 @@
 
       return
 
-    SQLitePluginTransaction::finish = ->
+    SQLitePluginTransaction::$finish = ->
       if @finalized then return
       tx = @
 
@@ -819,6 +945,7 @@
           #console.log "delete db name: #{first}"
           #args.path = first
           #args.dblocation = dblocations[0]
+          #args.dblocation = dblocations[2]
           throw newSQLError 'Sorry first deleteDatabase argument must be an object'
 
         else
@@ -832,6 +959,7 @@
           args.path = dbname
           #dblocation = if !!first.location then dblocations[first.location] else null
           #args.dblocation = dblocation || dblocations[0]
+          #args.dblocation = dblocation || dblocations[2]
 
         if !first.iosDatabaseLocation and !first.location and first.location isnt 0
           throw newSQLError 'Database location or iosDatabaseLocation setting is now mandatory in deleteDatabase call.'
@@ -857,6 +985,9 @@
         # when deleting a database
         # (and cleanup any other internal resources)
         delete SQLitePlugin::openDBs[args.path]
+        delete SQLitePlugin::dbidmap[args.path]
+        delete SQLitePlugin::fjmap[args.path]
+
         cordova.exec success, error, "SQLitePlugin", "delete", [ args ]
 
 ## Self test:

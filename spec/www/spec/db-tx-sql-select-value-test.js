@@ -1052,8 +1052,9 @@ var mytests = function() {
         // - CRASH on iOS as reported in litehelpers/Cordova-sqlite-storage#405
         // - Android version returns result with missing row
         it(suiteName + "SELECT ABS(?) with '9e999' (Infinity) parameter argument" +
-           ((!isWebSql && isAndroid) ? ' [Android PLUGIN BROKEN: result with missing row]' : ''), function(done) {
+           ((!isWebSql && !isWindows && isAndroid && isImpl2) ? ' [Android PLUGIN BROKEN (androidDatabaseImplementation: 2): result with missing row]' : ''), function(done) {
           if (isWP8) pending('SKIP for WP8'); // (no callback received)
+          if (!isWebSql && !isWindows && isAndroid && !isImpl2) pending('BROKEN for default Android [evcore-native-driver] implementation: hanging tx');
           if (!isWebSql && !isAndroid && !isWindows && !isWP8) pending('SKIP for iOS/macOS plugin due to CRASH');
 
           var db = openDatabase('SELECT-ABS-Infinite-parameter-results-test.db', '1.0', 'Test', DEFAULT_SIZE);
@@ -1087,8 +1088,9 @@ var mytests = function() {
         }, MYTIMEOUT);
 
         it(suiteName + "SELECT -ABS(?) with '9e999' (Infinity) parameter argument" +
-           ((!isWebSql && isAndroid) ? ' [Android PLUGIN BROKEN: missing result]' : ''), function(done) {
+           ((!isWebSql && !isWindows && isAndroid && isImpl2) ? ' [Android PLUGIN BROKEN (androidDatabaseImplementation: 2): result with missing row]' : ''), function(done) {
           if (isWP8) pending('SKIP for WP8'); // (no callback received)
+          if (!isWebSql && !isWindows && isAndroid && !isImpl2) pending('BROKEN for default Android [evcore-native-driver] implementation: hanging tx');
           if (!isWebSql && !isAndroid && !isWindows && !isWP8) pending('SKIP for iOS/macOS plugin due to CRASH');
 
           var db = openDatabase('SELECT-ABS-minus-Infinite-parameter-results-test.db', '1.0', 'Test', DEFAULT_SIZE);

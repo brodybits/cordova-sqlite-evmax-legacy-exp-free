@@ -99,6 +99,10 @@ Contact for commercial license: info@litehelpers.net
 
   SQLitePlugin.prototype.openDBs = {};
 
+  SQLitePlugin.prototype.dbidmap = {};
+
+  SQLitePlugin.prototype.fjmap = {};
+
   SQLitePlugin.prototype.addTransaction = function(t) {
     if (!txLocks[this.dbname]) {
       txLocks[this.dbname] = {
@@ -174,6 +178,7 @@ Contact for commercial license: info@litehelpers.net
     var openerrorcb, opensuccesscb, step2;
     if (this.dbname in this.openDBs) {
       console.log('database already open: ' + this.dbname);
+      this.dbid = this.dbidmap[this.dbname];
       nextTick((function(_this) {
         return function() {
           success(_this);
@@ -182,12 +187,16 @@ Contact for commercial license: info@litehelpers.net
     } else {
       console.log('OPEN database: ' + this.dbname);
       opensuccesscb = (function(_this) {
-        return function(a1) {
+        return function(fjinfo) {
           var txLock;
           console.log('OPEN database: ' + _this.dbname + ' - OK');
-          if (!!a1 && a1 === 'a1') {
+          if (!!fjinfo && fjinfo === 'a1') {
             console.log('Detected Android/iOS version with flat JSON interface');
             useflatjson_a1 = true;
+          }
+          if (!!fjinfo && !!fjinfo.dbid) {
+            _this.dbidmap[_this.dbname] = _this.dbid = fjinfo.dbid;
+            _this.fjmap[_this.dbname] = true;
           }
           if (!_this.openDBs[_this.dbname]) {
             console.log('database was closed during open operation');
@@ -211,10 +220,14 @@ Contact for commercial license: info@litehelpers.net
             error(newSQLError('Could not open database'));
           }
           delete _this.openDBs[_this.dbname];
+          delete _this.dbidmap[_this.dbname];
+          delete _this.fjmap[_this.dbname];
           _this.abortAllPendingTransactions();
         };
       })(this);
       this.openDBs[this.dbname] = DB_STATE_INIT;
+      this.dbidmap[this.dbname] = this.dbid = null;
+      this.fjmap[this.dbname] = false;
       step2 = (function(_this) {
         return function() {
           cordova.exec(opensuccesscb, openerrorcb, "SQLitePlugin", "open", [_this.openargs]);
@@ -441,20 +454,124 @@ Contact for commercial license: info@litehelpers.net
         if (--waiting === 0) {
           if (txFailure) {
             tx.executes = [];
-            tx.abort(txFailure);
+            tx.$abort(txFailure);
           } else if (tx.executes.length > 0) {
             tx.run();
           } else {
-            tx.finish();
+            tx.$finish();
           }
         }
       };
     };
     if (useflatjson_a1) {
       this.run_batch_flatjson_a1(batchExecutes, handlerFor);
+    } else if (this.db.fjmap[this.db.dbname]) {
+      this.run_batch_flatjson(batchExecutes, handlerFor);
     } else {
       this.run_batch(batchExecutes, handlerFor);
     }
+  };
+
+  SQLitePluginTransaction.prototype.run_batch_flatjson = function(batchExecutes, handlerFor) {
+    var bl, flatlist, i, l, len1, mycb, mycbmap, p, ref, request;
+    flatlist = [];
+    mycbmap = {};
+    this.db.dbid = this.db.dbidmap[this.db.dbname];
+    flatlist.push(this.db.dbid);
+    flatlist.push(batchExecutes.length);
+    i = 0;
+    while (i < batchExecutes.length) {
+      request = batchExecutes[i];
+      mycbmap[i] = {
+        success: handlerFor(i, true),
+        error: handlerFor(i, false)
+      };
+      flatlist.push(request.sql);
+      flatlist.push(request.params.length);
+      ref = request.params;
+      for (l = 0, len1 = ref.length; l < len1; l++) {
+        p = ref[l];
+        flatlist.push(p);
+      }
+      i++;
+    }
+    flatlist.push('extra');
+    bl = batchExecutes.length;
+    mycb = function(result) {
+      var c, changes, code, errormessage, insert_id, j, k, q, r, ri, rl, row, rows, v;
+      i = 0;
+      ri = 0;
+      rl = result.length;
+      if (rl > 0 && result[0] === 'batcherror') {
+        while (i < bl) {
+          mycbmap[i].error({
+            result: {
+              code: -1,
+              sqliteCode: -1,
+              message: 'internal batch error'
+            }
+          });
+          ++i;
+        }
+        return;
+      }
+      while (ri < rl) {
+        r = result[ri++];
+        q = mycbmap[i];
+        if (r === 'ok') {
+          q.success({
+            rows: []
+          });
+        } else if (r === "ch2") {
+          changes = result[ri++];
+          insert_id = result[ri++];
+          q.success({
+            rowsAffected: changes,
+            insertId: insert_id
+          });
+        } else if (r === 'okrows') {
+          rows = [];
+          changes = 0;
+          insert_id = void 0;
+          if (result[ri] === 'changes') {
+            ++ri;
+            changes = result[ri++];
+          }
+          if (result[ri] === 'insert_id') {
+            ++ri;
+            insert_id = result[ri++];
+          }
+          while (result[ri] !== 'endrows') {
+            c = result[ri++];
+            j = 0;
+            row = {};
+            while (j < c) {
+              k = result[ri++];
+              v = result[ri++];
+              row[k] = v;
+              ++j;
+            }
+            rows.push(row);
+          }
+          q.success({
+            rows: rows,
+            rowsAffected: changes,
+            insertId: insert_id
+          });
+          ++ri;
+        } else if (r === 'error') {
+          code = result[ri++];
+          ++ri;
+          errormessage = result[ri++];
+          q.error({
+            code: code,
+            message: errormessage
+          });
+        }
+        ++i;
+      }
+    };
+    cordova.exec(mycb, null, "SQLitePlugin", "fj:" + flatlist.length + ";extra", flatlist);
   };
 
   SQLitePluginTransaction.prototype.run_batch_flatjson_a1 = function(batchExecutes, handlerFor) {
@@ -593,7 +710,7 @@ Contact for commercial license: info@litehelpers.net
     ]);
   };
 
-  SQLitePluginTransaction.prototype.abort = function(txFailure) {
+  SQLitePluginTransaction.prototype.$abort = function(txFailure) {
     var failed, succeeded, tx;
     if (this.finalized) {
       return;
@@ -622,7 +739,7 @@ Contact for commercial license: info@litehelpers.net
     }
   };
 
-  SQLitePluginTransaction.prototype.finish = function() {
+  SQLitePluginTransaction.prototype.$finish = function() {
     var failed, succeeded, tx;
     if (this.finalized) {
       return;
@@ -752,6 +869,8 @@ Contact for commercial license: info@litehelpers.net
       }
       args.dblocation = dblocation;
       delete SQLitePlugin.prototype.openDBs[args.path];
+      delete SQLitePlugin.prototype.dbidmap[args.path];
+      delete SQLitePlugin.prototype.fjmap[args.path];
       return cordova.exec(success, error, "SQLitePlugin", "delete", [args]);
     }
   };

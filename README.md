@@ -1,4 +1,4 @@
-# Cordova/PhoneGap sqlite storage plugin - premium evmax version with parallel database reader enhancements for iOS
+# Cordova/PhoneGap sqlite storage plugin - EXPERIMENTAL PREMIUM evmax version with parallel database reader enhancements for TBD iOS/macOS ONLY
 
 Native interface to sqlite in a Cordova/PhoneGap plugin for ~~Android,~~ iOS, macOS, ~~and Windows 10 (UWP)~~, with API similar to HTML5/[Web SQL API](http://www.w3.org/TR/webdatabase/).
 
@@ -6,20 +6,20 @@ This plugin version is available under GPL v3 (<http://www.gnu.org/licenses/gpl.
 
 **NOTICE:** Other Cordova sqlite commercial licenses are NOT valid for this plugin version.
 
-XXX GENERAL: This is an EXPERIMENTAL plugin version with support for parallel reader database readers for iOS/macOS only. Android & Windows are NOT supported by this plugin version branch.
+XXX GENERAL: This is an EXPERIMENTAL plugin version with support for parallel sqlite database readers for TBD iOS/macOS ONLY. Android & Windows are NOT supported by this plugin version branch.
 
 XXX [brodybits / cordova-sqlite-evmax-legacy-exp-free#1](https://github.com/brodybits/cordova-sqlite-evmax-legacy-exp-free/issues/1): parallel reader/writer failures may occur due to locking as described in <https://www.sqlite.org/lockingv3.html>. Temporary workaround may be needed at the application layer. Another alternative discussed in [brodybits / cordova-sqlite-evmax-legacy-exp-free#1](https://github.com/brodybits/cordova-sqlite-evmax-legacy-exp-free/issues/1) may be to use WAL mode instead.
 
 XXX TODO: This document may be out of date.
 
-XXX read-only mode TBD possibly not enforced
+XXX TBD read-only mode is NOT ENFORCED
 
 XXX deleteDatabase NOT SUPPORTED for now, selfTest also NOT supported
 
-_XXX OTHER ISSUES:_
-- _possible crash in certain cases of inline BLOB values on iOS/macOS_
-- _this plugin version now returns invalid error code & inconsistent error message on iOS/macOS_
-- _INSERT or IGNORE result in case of constraint violation reports insertId=-1 on iOS/macOS_
+XXX TBD OTHER ISSUES:
+- possible crash in certain cases of inline BLOB values on iOS/macOS
+- this plugin version now returns invalid error code & inconsistent error message on iOS/macOS
+- INSERT or IGNORE result in case of constraint violation reports INCORRECT insertId value (-1) on iOS/macOS
 
 ## About this plugin version branch
 
@@ -151,7 +151,7 @@ See the [Sample section](#sample) for a sample with a more detailed explanation.
 - This plugin version uses a `before_plugin_install` hook to install sqlite3 library dependencies from `cordova-sqlite-storage-dependencies` via npm.
 - Use of other systems such as Cordova Plugman, PhoneGap CLI, PhoneGap Build, and Intel XDK is no longer supported _by this plugin version_ since they do not honor the `before_plugin_install` hook. The supported solution is to _use [litehelpers / Cordova-sqlite-evcore-extbuild-free](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free) (GPL or commercial license terms); alternative with permissive license terms is available at: [brodybits / cordova-sqlite-legacy-build-support](https://github.com/brodybits/cordova-sqlite-legacy-build-support) (limited testing, limited updates)_.
 - SQLite `3.15.2` included when building (all platforms), with the following definitions *for iOS/macOS/Windows*:
-  - `SQLITE_THREADSAFE=1` (`SQLITE_THREADSAFE=2` on iOS/macOS)
+  - `SQLITE_THREADSAFE=2` on XXX TBD iOS/macOS <!-- XXX TBD FIX NEEDED for Android, FUTURE TBD FIX POSSIBLY NEEDED for Windows -->
   - `SQLITE_DEFAULT_MEMSTATUS=0`
   - `SQLITE_OMIT_DECLTYPE`
   - `SQLITE_OMIT_DEPRECATED`

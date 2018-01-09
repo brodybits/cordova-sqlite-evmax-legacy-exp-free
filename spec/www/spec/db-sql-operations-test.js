@@ -45,7 +45,7 @@ var scenarioList = [
   'Plugin-implementation-2'
 ];
 
-var scenarioCount = (!!window.hasWebKitBrowser) ? (isAndroid ? 3 : 2) : 1;
+var pluginScenarioCount = isAndroid ? 2 : 1;
 
 var mytests = function() {
 
@@ -55,8 +55,6 @@ var mytests = function() {
       isAndroid ? 'Plugin-implementation-default' : 'Plugin',
       'Plugin-implementation-2'
     ];
-
-    var pluginScenarioCount = isAndroid ? 2 : 1;
 
     for (var i=0; i<pluginScenarioCount; ++i) {
 
@@ -952,8 +950,6 @@ var mytests = function() {
       'Plugin-implementation-2'
     ];
 
-    var pluginScenarioCount = isAndroid ? 2 : 1;
-
     for (var i=0; i<pluginScenarioCount; ++i) {
 
       describe(pluginScenarioList[i] + ': db.executeSql error test(s)', function() {
@@ -1690,8 +1686,6 @@ var mytests = function() {
       isAndroid ? 'Plugin-implementation-default' : 'Plugin',
       'Plugin-implementation-2'
     ];
-
-    var pluginScenarioCount = isAndroid ? 2 : 1;
 
     for (var i=0; i<pluginScenarioCount; ++i) {
 

@@ -35,19 +35,20 @@ var isAndroid = !isWindows && /Android/.test(navigator.userAgent);
 // the default Android implementation and implementation #2,
 // this test script will also apply the androidLockWorkaround: 1 option
 // in case of implementation #2.
-var scenarioList = [
+var pluginScenarioList = [
   isAndroid ? 'Plugin-implementation-default' : 'Plugin',
-  'HTML5',
   'Plugin-implementation-2'
 ];
 
-var scenarioCount = (!!window.hasWebKitBrowser) ? (isAndroid ? 3 : 2) : 1;
+// XXX TBD:
+// var pluginScenarioCount = isAndroid ? 2 : 1;
+var pluginScenarioCount = 1;
 
 var mytests = function() {
 
-  for (var i=0; i<scenarioCount; ++i) {
+  for (var i=0; i<pluginScenarioCount; ++i) {
 
-    describe(scenarioList[i] + ': simultaneous tx access test(s)', function() {
+    describe(pluginScenarioList[i] + ': parallel reader test(s)', function() {
       var scenarioName = scenarioList[i];
       var suiteName = scenarioName + ': ';
       var isWebSql = (i === 1);

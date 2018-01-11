@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova-sqlite-evmax-legacy-exp-free"
-    version="0.0.3-pre2c">
+    version="0.0.3-pre3">
 
     <name>Cordova sqlite storage plugin - TBD evmax (EXPERIMENTAL)</name>
 
@@ -21,7 +21,7 @@
     </js-module>
 
     <!-- android -->
-    <platform name="android-disabled">
+    <platform name="android">
         <!-- Cordova >= 3.0.0 -->
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="SQLitePlugin">
@@ -34,9 +34,9 @@
         <source-file src="src/android/io/sqlc/SQLiteConnectorDatabase.java" target-dir="src/io/sqlc"/>
 
         <!-- Android-sqlite-connector [jar]: -->
-        <lib-file src="node_modules/cordova-sqlite-storage-dependencies/libs/sqlite-connector.jar" />
+        <lib-file src="node_modules/cordova-sqlite-ext-deps/libs/sqlite-connector.jar" />
         <!-- Android-sqlite-connector native driver [native libs in jar]: -->
-        <lib-file src="node_modules/cordova-sqlite-storage-dependencies/libs/sqlite-native-driver.jar" />
+        <lib-file src="node_modules/cordova-sqlite-ext-deps/libs/sqlite-native-driver.jar" />
     </platform>
 
     <!-- iOS -->

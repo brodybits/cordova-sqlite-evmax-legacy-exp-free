@@ -1,12 +1,12 @@
-# Cordova/PhoneGap sqlite storage plugin - EXPERIMENTAL PREMIUM evmax version with parallel database reader enhancements for TBD iOS/macOS ONLY
+# Cordova/PhoneGap sqlite storage plugin - EXPERIMENTAL PREMIUM evmax version with parallel database reader enhancements
 
-Native interface to sqlite in a Cordova/PhoneGap plugin for ~~Android,~~ iOS, macOS, ~~and Windows 10 (UWP)~~, with API similar to HTML5/[Web SQL API](http://www.w3.org/TR/webdatabase/).
+Native interface to sqlite in a Cordova/PhoneGap plugin for Android / iOS / macOS (FUTURE TBD Windows 10 UWP NOT SUPPORTED by this plugin version), with API similar to HTML5/[Web SQL API](http://www.w3.org/TR/webdatabase/).
 
 This plugin version is available under GPL v3 (<http://www.gnu.org/licenses/gpl.txt>) or premium commercial license and includes components available under the MIT and Apache 2.0 licenses. Contact for commercial license: <sales@litehelpers.net>
 
 **NOTICE:** Other Cordova sqlite commercial licenses are NOT valid for this plugin version.
 
-XXX GENERAL: This is an EXPERIMENTAL plugin version with support for parallel sqlite database readers for TBD iOS/macOS ONLY. Android & Windows are NOT supported by this plugin version branch.
+XXX GENERAL: This is an EXPERIMENTAL plugin version with support for parallel sqlite database readers for Android/iOS/macOS. Windows is NOT supported by this plugin version branch.
 
 XXX [brodybits / cordova-sqlite-evmax-legacy-exp-free#1](https://github.com/brodybits/cordova-sqlite-evmax-legacy-exp-free/issues/1): parallel reader/writer failures may occur due to locking as described in <https://www.sqlite.org/lockingv3.html>. Temporary workaround may be needed at the application layer. Another alternative discussed in [brodybits / cordova-sqlite-evmax-legacy-exp-free#1](https://github.com/brodybits/cordova-sqlite-evmax-legacy-exp-free/issues/1) may be to use WAL mode instead.
 
@@ -18,16 +18,17 @@ XXX deleteDatabase NOT SUPPORTED for now, selfTest also NOT supported
 
 XXX TBD OTHER ISSUES:
 - possible crash in certain cases of inline BLOB values on iOS/macOS
-- this plugin version now returns invalid error code & inconsistent error message on iOS/macOS
+- this plugin version now returns invalid error code & inconsistent error message on iOS/macOS (TBD CHECK VERIFICATION on Android)
 - INSERT or IGNORE result in case of constraint violation reports INCORRECT insertId value (-1) on iOS/macOS
+
+__XXX TBD OTHER MAJOR TODO(S):__
+- Roll Android sqlite access performance enhancements from cordova-sqlite-evcore into this plugin version
 
 ## About this plugin version branch
 
 TBD
 
-iOS/macOS only
-
-Android & Windows platforms are NOT supported, disabled in plugin.xml
+Windows platform is NOT supported, disabled in plugin.xml
 
 ~~This is the common version branch which supports the most widely used features and serves as the basis for the other versions.~~
 
@@ -151,7 +152,7 @@ See the [Sample section](#sample) for a sample with a more detailed explanation.
 - This plugin version uses a `before_plugin_install` hook to install sqlite3 library dependencies from `cordova-sqlite-storage-dependencies` via npm.
 - Use of other systems such as Cordova Plugman, PhoneGap CLI, PhoneGap Build, and Intel XDK is no longer supported _by this plugin version_ since they do not honor the `before_plugin_install` hook. The supported solution is to _use [litehelpers / Cordova-sqlite-evcore-extbuild-free](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free) (GPL or commercial license terms); alternative with permissive license terms is available at: [brodybits / cordova-sqlite-legacy-build-support](https://github.com/brodybits/cordova-sqlite-legacy-build-support) (limited testing, limited updates)_.
 - SQLite `3.15.2` included when building (all platforms), with the following definitions *for iOS/macOS/Windows*:
-  - `SQLITE_THREADSAFE=2` on TBD iOS/macOS <!-- XXX TBD FIX NEEDED for support on Android -->
+  - `SQLITE_THREADSAFE=2`
   - `SQLITE_DEFAULT_MEMSTATUS=0`
   - `SQLITE_OMIT_DECLTYPE`
   - `SQLITE_OMIT_DEPRECATED`
@@ -162,7 +163,9 @@ See the [Sample section](#sample) for a sample with a more detailed explanation.
   - `SQLITE_ENABLE_FTS3`
   - `SQLITE_ENABLE_FTS3_PARENTHESIS`
   - `SQLITE_ENABLE_FTS4`
+  - `SQLITE_ENABLE_FTS5` TBD Android ONLY
   - `SQLITE_ENABLE_RTREE`
+  - `SQLITE_ENABLE_JSON1` TBD Android ONLY
   - `SQLITE_DEFAULT_PAGE_SIZE=1024` and `SQLITE_DEFAULT_CACHE_SIZE=2000` to avoid "potentially distruptive change(s)" from SQLite 3.12.0 described at: <http://sqlite.org/pgszchng2016.html>
   - `SQLITE_OS_WINRT` (Windows only)
   - `NDEBUG` (Windows only)

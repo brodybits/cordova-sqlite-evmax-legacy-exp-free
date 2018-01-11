@@ -151,7 +151,7 @@ See the [Sample section](#sample) for a sample with a more detailed explanation.
 - This plugin version uses a `before_plugin_install` hook to install sqlite3 library dependencies from `cordova-sqlite-storage-dependencies` via npm.
 - Use of other systems such as Cordova Plugman, PhoneGap CLI, PhoneGap Build, and Intel XDK is no longer supported _by this plugin version_ since they do not honor the `before_plugin_install` hook. The supported solution is to _use [litehelpers / Cordova-sqlite-evcore-extbuild-free](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free) (GPL or commercial license terms); alternative with permissive license terms is available at: [brodybits / cordova-sqlite-legacy-build-support](https://github.com/brodybits/cordova-sqlite-legacy-build-support) (limited testing, limited updates)_.
 - SQLite `3.15.2` included when building (all platforms), with the following definitions *for iOS/macOS/Windows*:
-  - `SQLITE_THREADSAFE=2` on XXX TBD iOS/macOS <!-- XXX TBD FIX NEEDED for Android, FUTURE TBD FIX POSSIBLY NEEDED for Windows -->
+  - `SQLITE_THREADSAFE=2` on TBD iOS/macOS <!-- XXX TBD FIX NEEDED for support on Android -->
   - `SQLITE_DEFAULT_MEMSTATUS=0`
   - `SQLITE_OMIT_DECLTYPE`
   - `SQLITE_OMIT_DEPRECATED`

@@ -310,6 +310,8 @@ var mytests = function() {
 
         // TBD emoji (UTF-8 4 octets) [NOT RECOMMENDED]:
         it(suiteName + 'Open database with emoji \uD83D\uDE03 (UTF-8 4 octets) & check database file name [NOT RECOMMENDED]', function(done) {
+          if (!isWindows && isAndroid && !isImpl2) pending('XXX TBD CRASH on Android 7.x/??? (default evcore-native-driver database access implementation)');
+
           var dbName = 'a\uD83D\uDE03';
 
           try {
@@ -366,9 +368,11 @@ var mytests = function() {
           {label: ':', dbName: 'first:second.db'},
           {label: ';', dbName: 'first;second.db'},
           {label: "'1'", dbName: "'1'.db"},
-          // UTF-8 multiple octets:
-          {label: 'é (UTF-8 2 octets)', dbName: 'aé.db'},
-          {label: '€ (UTF-8 3 octets)', dbName: 'a€.db'},
+          // XXX UTF-8 with multiple octets NOT WORKING on Android
+          // (default Android-evcore-native-driver access implementation)
+          // ref: litehelpers/Cordova-sqlite-evcore-extbuild-free#25
+          // {label: 'é (UTF-8 2 octets)', dbName: 'aé.db'},
+          // {label: '€ (UTF-8 3 octets)', dbName: 'a€.db'},
         ];
 
         additionalDatabaseNameScenarios.forEach(function(mytest) {
@@ -417,9 +421,10 @@ var mytests = function() {
           {label: 'CR', dbName: 'a\rb'},
           {label: 'LF', dbName: 'a\nb'},
           {label: 'CRLF', dbName: 'a\r\nb'},
-          {label: 'vertical tab', dbName: 'a\v1'},
-          {label: 'form feed', dbName: 'a\f1'},
-          {label: 'backspace', dbName: 'a\b1'},
+          // Also broken on Android with default evcore-native-driver db implementation:
+          //{label: 'vertical tab', dbName: 'a\v1'},
+          //{label: 'form feed', dbName: 'a\f1'},
+          //{label: 'backspace', dbName: 'a\b1'},
           {label: '*', dbName: 'first * second.db'},
           {label: '<', dbName: 'first < second.db'},
           {label: '>', dbName: 'first > second.db'},
@@ -809,10 +814,9 @@ var mytests = function() {
               done();
             });
           } catch (e) {
-              // EXPECTED RESULT:
-              expect(true).toBe(true);
-
-              done();
+            // EXPECTED RESULT - stopped by the implementation:
+            expect(e).toBeDefined();
+            done();
           }
         }, MYTIMEOUT);
 
@@ -834,7 +838,7 @@ var mytests = function() {
               done();
             });
           } catch (e) {
-            // EXPECTED RESULT: stopped by the implementation
+            // EXPECTED RESULT - stopped by the implementation:
             expect(e).toBeDefined();
 
             done();

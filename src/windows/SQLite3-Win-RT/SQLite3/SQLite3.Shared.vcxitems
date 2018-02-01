@@ -15,7 +15,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\node_modules\cordova-sqlite-storage-dependencies\sqlite3.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\node_modules\cordova-sqlite-evcore-free-dependencies\sqlite3.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Constants.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Database.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Statement.h" />
@@ -25,7 +25,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Constants.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Database.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Statement.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\node_modules\cordova-sqlite-storage-dependencies\sqlite3.c">
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\node_modules\cordova-sqlite-evcore-free-dependencies\sqlite3.c">
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">

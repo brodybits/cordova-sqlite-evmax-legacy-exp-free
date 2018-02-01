@@ -1,5 +1,9 @@
 # Changes
 
+# cordova-sqlite-evmax-legacy-exp-free 0.0.4-pre0-01
+
+TBD
+
 # cordova-sqlite-evmax-legacy-exp-free 0.0.3-pre3
 
 - Android platform support

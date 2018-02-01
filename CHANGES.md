@@ -1,8 +1,8 @@
 # Changes
 
-# cordova-sqlite-evmax-legacy-exp-free 0.1.0-dev01
+# cordova-sqlite-evmax-legacy-exp-free 0.1.0-rc1
 
-- Include Android-sqlite-evcore-native-driver-free enhancements
+- Include Android-sqlite-evcore-native-driver-free enhancements with build from cordova-sqlite-evcore-extbuild-free 0.9.2
 
 # cordova-sqlite-evmax-legacy-exp-free 0.0.3-pre3
 
@@ -10,7 +10,6 @@
 
 ## cordova-sqlite-storage 2.2.0
 
-- Android-sqlite-native-driver NDK objects in JAR to resolve issue on cordova-android@7
 - Fix SQLiteAndroidDatabase implementation for Turkish and other foreign locales
 
 ## cordova-sqlite-storage 2.1.5
@@ -19,7 +18,6 @@
 
 - Add error info text in case of close error on Windows
 - Signal INTERNAL ERROR in case of attempt to reuse db on Windows (should never happen due to workaround solution to BUG 666)
-- SQLITE_DEFAULT_CACHE_SIZE build flag fix for macOS ("osx") and Windows
 
 ###### cordova-sqlite-legacy-express-core 1.0.5
 
@@ -68,7 +66,6 @@
 ##### cordova-sqlite-legacy-core 1.0.2
 
 - Fix log in case of transaction waiting for open to finish; doc fixes
-- SQLite 3.15.2 build with SQLITE_THREADSAFE=2 on iOS/macOS (SQLITE_THREADSAFE=1 on Android/Windows) and other flag fixes in this version branch to avoid possible malformed database due to multithreaded access ref: litehelpers/Cordova-sqlite-storage#703
 - Windows 10 (UWP) build with /SAFESEH flag on Win32 (x86) target
 
 ###### cordova-sqlite-legacy-express-core 1.0.2
@@ -81,7 +78,7 @@
 
 ## cordova-sqlite-storage 2.1.0
 
-- Visual Studio 2017 updates for Windows UWP build
+NOTICE: cordova-sqlite-evcore-extbuild-free releases 0.8.5, 0.8.6, 0.8.7, and 0.9.0 include evcore-native-driver build with missing source; a special GPL v3 exception is granted for these releases as described in <https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free/issues/24>.
 
 ## cordova-sqlite-storage 2.0.4
 
@@ -90,20 +87,11 @@
 - Workaround solution to BUG litehelpers/Cordova-sqlite-storage#666 (hanging transaction in case of location reload/change)
 - selfTest simulate scenario & test solution to BUG litehelpers/Cordova-sqlite-storage#666 (also includes string test and test of effects of location reload/change in this version branch, along with another internal check)
 
-## cordova-sqlite-storage 2.0.3
-
-- Drop engines rule from package.json
-- Doc fixes
-
 ### cordova-sqlite-storage 1.5.4
 
 - Fix iOS/macOS version to report undefined insertId in case INSERT OR IGNORE is ignored
 - Fix FIRST_WORD check for android.sqlite.database implementation
 - Doc updates
-
-## cordova-sqlite-storage 2.0.2
-
-- Fix Windows target platform version
 
 ### cordova-sqlite-storage 1.5.3
 
@@ -112,13 +100,33 @@
 - Signal error in case of a failure opening the database file (iOS/macOS)
 - Doc fixes and updates
 
-## cordova-sqlite-storage 2.0.1
+# cordova-sqlite-evcore-extbuild-free 0.8.5
+
+NOTICE: cordova-sqlite-evcore-extbuild-free releases 0.8.5, 0.8.6, 0.8.7, and 0.9.0 include evcore-native-driver build with missing source; a special GPL v3 exception is granted for these releases as described in <https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free/issues/24>.
+
+- Fix openDatabase/deleteDatabase exception messages in this version branch
+- Build (with SQLite 3.15.2) with the following defines:
+  - SQLITE_TEMP_STORE=2
+  - SQLITE_THREADSAFE=1
+  - SQLITE_ENABLE_FTS3
+  - SQLITE_ENABLE_FTS3_PARENTHESIS
+  - SQLITE_ENABLE_FTS4
+  - SQLITE_ENABLE_FTS5
+  - SQLITE_ENABLE_RTREE
+  - SQLITE_ENABLE_JSON1
+  - SQLITE_OMIT_BUILTIN_TEST
+  - SQLITE_OMIT_LOAD_EXTENSION
+  - SQLITE_DEFAULT_PAGE_SIZE=4096 and SQLITE_DEFAULT_CACHE_SIZE=-2000 - new stable page/cache sizes from 3.12.0 ref:
+    - <http://sqlite.org/pgszchng2016.html>
+    - <http://sqlite.org/releaselog/3_12_0.html>
+  - SQLITE_OS_WINRT for Windows only
+- Android version with JSMN (http://zserge.com/jsmn.html) dependency removed.
+- Doc updates
 
 ### cordova-sqlite-storage 1.5.2
 
 - Check transaction callback functions to avoid crash on Windows
 - Fix echoTest callback handling
-- Fix openDatabase/deleteDatabase exception messages
 - Move Lawnchair adapter to a separate project
 - Doc updates
 
@@ -132,13 +140,6 @@
 
 ### cordova-sqlite-storage 1.5.0
 
-- Build with sqlite 3.15.1, with the following settings:
-  - SQLITE_TEMP_STORE=2
-  - SQLITE_THREADSAFE=2
-  - FTS3, FTS4, and R-Tree enabled
-  - Not defined for Android: SQLITE_ENABLE_COLUMN_METADATA
-  - iOS/macOS ONLY: SQLITE_LOCKING_STYLE=1 SQLITE_OMIT_BUILTIN_TEST SQLITE_OMIT_LOAD_EXTENSION
-  - Windows ONLY: SQLITE_OS_WINRT
 - Drop support for Windows 8.1 & Windows Phone 8.1
 
 ### cordova-sqlite-storage 1.4.9
@@ -149,11 +150,14 @@
 - Cleanup plugin.xml: remove old engine constraint that was already commented out
 - Fix LICENSE.md
 
+# cordova-sqlite-evcore-extbuild-free 0.8.2
+
+- Quick fix for Android error mapping and reporting
+- Fix default Android implementation to reject SQL with too many parameters
+
 ## cordova-sqlite-evcore-common-free 0.7.2
 
-- Quick fix for Android error mapping
 - Fix Android version to handle location reload/change properly
-- Fix Android-sqlite-evcore-native-driver-free (default Android implementation) to reject SQL with too many parameters
 
 ### cordova-sqlite-storage 1.4.8
 
@@ -171,7 +175,12 @@
 
 ## cordova-sqlite-evcore-common-free 0.7.1
 
-- Use SQLite 3.14 (without FTS5 or JSON1 enabled) for iOS and Windows
+# cordova-sqlite-evcore-extbuild-free 0.8.1
+
+- Custom Android database file location
+- Include SQLite 3.14 for iOS and Windows (without FTS5 or JSON1 enabled)
+
+## cordova-sqlite-evcore-common-free 0.7.1
 
 ### cordova-sqlite-storage 1.4.6
 
@@ -192,6 +201,11 @@
 - Announce new Cordova-sqlite-evcore-extbuild-free version
 - Additional tests
 - Other doc fixes
+
+# cordova-sqlite-evcore-extbuild-free 0.8.0
+
+- SQLite and Android-sqlite-evcore-native-driver-free dependencies included to support PhoneGap Build
+- Cordova engines specification dropped from package.json
 
 ## cordova-sqlite-evcore-free 0.7.0
 

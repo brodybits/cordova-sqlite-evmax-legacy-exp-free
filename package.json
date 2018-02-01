@@ -1,7 +1,7 @@
 {
   "name": "cordova-sqlite-evmax-legacy-exp-free",
-  "version": "0.1.0-dev01",
-  "description": "Native interface to SQLite for PhoneGap/Cordova - TBD EXPERIMENTAL evmax version",
+  "version": "0.1.0-rc1",
+  "description": "Native interface to SQLite for PhoneGap/Cordova - XXX TBD EXPERIMENTAL evmax version with Android performance/memory improvements and extra features for PhoneGap Build",
   "cordova": {
     "id": "cordova-sqlite-evmax-legacy-exp-free",
     "platforms": [
@@ -29,9 +29,6 @@
     "url": "https://github.com/brodybits/cordova-sqlite-evmax-legacy-exp-free/issues"
   },
   "homepage": "https://github.com/brodybits/cordova-sqlite-evmax-legacy-exp-free",
-  "dependencies": {
-    "cordova-sqlite-evcore-free-dependencies": "0.7.3"
-  },
   "scripts": {
     "start": "node scripts/prepareSpec.js"
   },

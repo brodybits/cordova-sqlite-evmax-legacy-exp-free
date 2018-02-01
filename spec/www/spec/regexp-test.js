@@ -40,13 +40,10 @@ var mytests = function() {
 
       it(suiteName + 'Simple REGEXP test',
         function(done) {
-          // TBD Test for Android Web SQL ONLY in this version branch:
           if (isWP8) pending('NOT IMPLEMENTED for WP8 (plugin)');
           if (isWindows) pending('NOT IMPLEMENTED for Windows (plugin)');
-          if (!isWebSql && !isWindows && isAndroid) pending('SKIP for Android plugin'); // TBD SKIP for Android plugin (for now)
+          if (!isWebSql && isAndroid && isImpl2 && /Android [1-4]/.test(navigator.userAgent)) pending('BROKEN for android.database (version 1.x-4.x)');
           if (isWebSql && !isAndroid && !isWindows && !isWP8) pending('SKIP for iOS (WebKit) Web SQL');
-          // TBD REMOVE from version branches such as cordova-sqlite-ext:
-          if (!isWebSql && !isAndroid && !isWindows && !isWP8) pending('NOT IMPLEMENTED for iOS/macOS plugin');
 
           var db = openDatabase('simple-regexp-test.db', '1.0', 'test', DEFAULT_SIZE);
 

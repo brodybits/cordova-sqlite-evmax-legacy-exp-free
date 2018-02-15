@@ -2,7 +2,7 @@
 
 # cordova-sqlite-evmax-legacy-exp-free 0.1.0-rc1
 
-- Include Android-sqlite-evcore-native-driver-free enhancements with build from cordova-sqlite-evcore-extbuild-free 0.9.2
+- Include Android-sqlite-evcore-native-driver-free enhancements with build from cordova-sqlite-evcore-extbuild-free 0.9.2 (with JSMN (<http://zserge.com/jsmn.html>) included in build under MIT license)
 
 # cordova-sqlite-evmax-legacy-exp-free 0.0.3-pre3
 
@@ -78,8 +78,6 @@
 
 ## cordova-sqlite-storage 2.1.0
 
-NOTICE: cordova-sqlite-evcore-extbuild-free releases 0.8.5, 0.8.6, 0.8.7, and 0.9.0 include evcore-native-driver build with missing source; a special GPL v3 exception is granted for these releases as described in <https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free/issues/24>.
-
 ## cordova-sqlite-storage 2.0.4
 
 ###### cordova-sqlite-legacy-express-core 1.0.0
@@ -99,29 +97,6 @@ NOTICE: cordova-sqlite-evcore-extbuild-free releases 0.8.5, 0.8.6, 0.8.7, and 0.
 - Fix handling of undefined SQL argument values (Windows)
 - Signal error in case of a failure opening the database file (iOS/macOS)
 - Doc fixes and updates
-
-# cordova-sqlite-evcore-extbuild-free 0.8.5
-
-NOTICE: cordova-sqlite-evcore-extbuild-free releases 0.8.5, 0.8.6, 0.8.7, and 0.9.0 include evcore-native-driver build with missing source; a special GPL v3 exception is granted for these releases as described in <https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free/issues/24>.
-
-- Fix openDatabase/deleteDatabase exception messages in this version branch
-- Build (with SQLite 3.15.2) with the following defines:
-  - SQLITE_TEMP_STORE=2
-  - SQLITE_THREADSAFE=1
-  - SQLITE_ENABLE_FTS3
-  - SQLITE_ENABLE_FTS3_PARENTHESIS
-  - SQLITE_ENABLE_FTS4
-  - SQLITE_ENABLE_FTS5
-  - SQLITE_ENABLE_RTREE
-  - SQLITE_ENABLE_JSON1
-  - SQLITE_OMIT_BUILTIN_TEST
-  - SQLITE_OMIT_LOAD_EXTENSION
-  - SQLITE_DEFAULT_PAGE_SIZE=4096 and SQLITE_DEFAULT_CACHE_SIZE=-2000 - new stable page/cache sizes from 3.12.0 ref:
-    - <http://sqlite.org/pgszchng2016.html>
-    - <http://sqlite.org/releaselog/3_12_0.html>
-  - SQLITE_OS_WINRT for Windows only
-- Android version with JSMN (http://zserge.com/jsmn.html) dependency removed.
-- Doc updates
 
 ### cordova-sqlite-storage 1.5.2
 
@@ -150,15 +125,6 @@ NOTICE: cordova-sqlite-evcore-extbuild-free releases 0.8.5, 0.8.6, 0.8.7, and 0.
 - Cleanup plugin.xml: remove old engine constraint that was already commented out
 - Fix LICENSE.md
 
-# cordova-sqlite-evcore-extbuild-free 0.8.2
-
-- Quick fix for Android error mapping and reporting
-- Fix default Android implementation to reject SQL with too many parameters
-
-## cordova-sqlite-evcore-common-free 0.7.2
-
-- Fix Android version to handle location reload/change properly
-
 ### cordova-sqlite-storage 1.4.8
 
 - selfTest function add string test and test of effects of location reload/change
@@ -172,15 +138,6 @@ NOTICE: cordova-sqlite-evcore-extbuild-free releases 0.8.5, 0.8.6, 0.8.7, and 0.
 ### cordova-sqlite-storage 1.4.7
 
 - Minor JavaScript fixes to pass @brodybits/Cordova-sql-test-app
-
-## cordova-sqlite-evcore-common-free 0.7.1
-
-# cordova-sqlite-evcore-extbuild-free 0.8.1
-
-- Custom Android database file location
-- Include SQLite 3.14 for iOS and Windows (without FTS5 or JSON1 enabled)
-
-## cordova-sqlite-evcore-common-free 0.7.1
 
 ### cordova-sqlite-storage 1.4.6
 
@@ -201,15 +158,6 @@ NOTICE: cordova-sqlite-evcore-extbuild-free releases 0.8.5, 0.8.6, 0.8.7, and 0.
 - Announce new Cordova-sqlite-evcore-extbuild-free version
 - Additional tests
 - Other doc fixes
-
-# cordova-sqlite-evcore-extbuild-free 0.8.0
-
-- SQLite and Android-sqlite-evcore-native-driver-free dependencies included to support PhoneGap Build
-- Cordova engines specification dropped from package.json
-
-## cordova-sqlite-evcore-free 0.7.0
-
-- Use Android-sqlite-evcore-native-driver-free for high performance and memory improvements on Android
 
 ### cordova-sqlite-storage 1.4.3
 

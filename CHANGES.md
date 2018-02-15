@@ -1,7 +1,8 @@
 # Changes
 
-# cordova-sqlite-evmax-legacy-exp-free 0.1.0-rc1
+# cordova-sqlite-evmax-legacy-exp-free 0.1.0
 
+- SQLITE_THREADSAFE=1 compile-time setting on iOS/macOS
 - Include Android-sqlite-evcore-native-driver-free enhancements with build from cordova-sqlite-evcore-extbuild-free 0.9.2 (with JSMN (<http://zserge.com/jsmn.html>) included in build under MIT license)
 
 # cordova-sqlite-evmax-legacy-exp-free 0.0.3-pre3

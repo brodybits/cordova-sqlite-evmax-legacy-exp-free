@@ -156,16 +156,18 @@ See the [Sample section](#sample) for a sample with a more detailed explanation.
 - This _plugin version_ includes the following extra features:
   - BASE64 integrated from [brodybits / sqlite3-base64](https://github.com/brodybits/sqlite3-base64), using [brodybits / libb64-encode](https://github.com/brodybits/libb64-encode) (based on <http://libb64.sourceforge.net/> by Chris Venter, public domain)
   - REGEXP for Android (default Android-sqlite-connector database implementation), iOS, and macOS using [brodybits / sqlite3-regexp-cached](https://github.com/brodybits/sqlite3-regexp-cached) (based on <http://git.altlinux.org/people/at/packages/?p=sqlite3-pcre.git> by Alexey Tourbin, public domain)
-- SQLite `3.15.2` _INCLUDED, with the following compile-time definitions (for all supported platforms Android/iOS/macOS~~/Windows~~)_:
-  - `SQLITE_THREADSAFE=1` (`SQLITE_THREADSAFE=2` on Android)
-  - ~~`SQLITE_DEFAULT_MEMSTATUS=0`~~ _(FUTURE TODO)_
-  - _~~`SQLITE_LOCKING_STYLE=1` on iOS/macOS~~ (XXX TODO ... already present in cordova-sqlite-evcore-common-free plugin version)_
-  - ~~`SQLITE_OMIT_DECLTYPE`~~ _(FUTURE TODO)_
-  - ~~`SQLITE_OMIT_DEPRECATED`~~ _(FUTURE TODO)_
-  - ~~`SQLITE_OMIT_PROGRESS_CALLBACK`~~ _(FUTURE TODO)_
-  - ~~`SQLITE_OMIT_SHARED_CACHE`~~ _(FUTURE TODO)_
+- SQLite `3.26.0` _INCLUDED, with the following compile-time definitions (for all supported platforms Android/iOS/macOS~~/Windows~~)_:
+  - `SQLITE_THREADSAFE=1`
+  - `SQLITE_DEFAULT_SYNCHRONOUS=3` (EXTRA DURABLE build setting) ref: [litehelpers/Cordova-sqlite-storage#736](https://github.com/litehelpers/Cordova-sqlite-storage/issues/736)
+  - `SQLITE_LOCKING_STYLE=1` on iOS/macOS ONLY
+  - `HAVE_USLEEP=1` (iOS/macOS/Windows)
+  - `SQLITE_DEFAULT_MEMSTATUS=0`
+  - `SQLITE_OMIT_DECLTYPE`
+  - `SQLITE_OMIT_DEPRECATED`
+  - `SQLITE_OMIT_PROGRESS_CALLBACK`
+  - `SQLITE_OMIT_SHARED_CACHE`
+  - `SQLITE_OMIT_LOAD_EXTENSION`
   - `SQLITE_TEMP_STORE=2`
-  - `SQLITE_OMIT_LOAD_EXTENSION` _(iOS/macOS/Windows ... XXX TODO missing on Android build)_
   - `SQLITE_ENABLE_FTS3`
   - `SQLITE_ENABLE_FTS3_PARENTHESIS`
   - `SQLITE_ENABLE_FTS4`
@@ -175,8 +177,7 @@ See the [Sample section](#sample) for a sample with a more detailed explanation.
   - `SQLITE_DEFAULT_PAGE_SIZE=4096` and `SQLITE_DEFAULT_CACHE_SIZE=-2000` - _new stable_ page/cache sizes from 3.12.0 ref:
     - <http://sqlite.org/pgszchng2016.html>
     - <http://sqlite.org/releaselog/3_12_0.html>
-  - `SQLITE_OS_WINRT` (Windows only)
-  - `NDEBUG` (Windows only)
+  - ~~`SQLITE_OS_WINRT` (Windows only)~~
 - This _plugin version_ supports the use of two (2) possible Android sqlite database implementations:
   - default: high-performance, lightweight [litehelpers / Android-sqlite-evcore-native-driver-free (ext-master version branch)](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free/tree/ext-master) NDK library build _(implemented in C)_
   - optional: built-in Android database classes (usage described below)

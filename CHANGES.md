@@ -1,5 +1,9 @@
 # Changes
 
+# cordova-sqlite-evmax-legacy-exp-free 0.1.1
+
+- SQLite 3.26.0 with build flag updates
+
 # cordova-sqlite-evmax-legacy-exp-free 0.1.0
 
 - SQLITE_THREADSAFE=1 compile-time setting on iOS/macOS

@@ -1,6 +1,6 @@
 {
   "name": "cordova-sqlite-evmax-legacy-exp-free",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Native interface to SQLite for PhoneGap/Cordova - XXX TBD EXPERIMENTAL evmax version with Android performance/memory improvements and extra features for PhoneGap Build",
   "cordova": {
     "id": "cordova-sqlite-evmax-legacy-exp-free",
